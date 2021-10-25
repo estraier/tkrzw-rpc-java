@@ -1,0 +1,124 @@
+# Source of configuration for Tkrzw for Java
+
+AC_INIT([tkrzw-rpc-java], [0.1.25])
+
+MYJARFILES="tkrzw_rpc.jar"
+MYJAVAFILES="DBMServiceGrpc.java TkrzwRpc.java Status.java StatusException.java RemoteDBM.java Iterator.java Test.java"
+
+MYJAVACFLAGS="-d ."
+MYJAVADOCFLAGS="-locale en -tag note:a:"Note:" -nodeprecated -nohelp -quiet -noqualifier all"
+MYJAVARUNFLAGS="-cp tkrzw_rpc.jar"
+
+pathtmp="$PATH"
+PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+PATH="$PATH:/usr/ccs/bin:/usr/ucb:/usr/xpg4/bin:/usr/xpg6/bin:$pathtmp"
+LIBRARY_PATH="$HOME/lib:/usr/local/lib:$LIBRARY_PATH"
+LD_LIBRARY_PATH="$HOME/lib:/usr/local/lib:$LD_LIBRARY_PATH"
+
+printf 'checking MYJAVAHOME... '
+if test -d "$JAVA_HOME"
+then
+  MYJAVAHOME="$JAVA_HOME"
+fi
+printf '%s\n' "$MYJAVAHOME"
+
+printf 'checking JAVAC... '
+JAVAC="$MYJAVAHOME/bin/javac"
+if uname | grep Darwin >config.tmp
+then
+  if test -x "$MYJAVAHOME/Commands/javac"
+  then
+    JAVAC="$MYJAVAHOME/Commands/javac"
+  else
+    JAVAC="$MYJAVAHOME/bin/javac"
+  fi
+fi
+if test -x "$JAVAC"
+then
+  printf '%s\n' "$JAVAC"
+else
+  printf 'no\n'
+  printf '#================================================================\n' 1>&2
+  printf '# WARNING: %s is not found.\n' "$JAVAC" 1>&2
+  printf '#================================================================\n' 1>&2
+fi
+
+if uname | grep Darwin >config.tmp
+then
+  if test -x "$MYJAVAHOME/Commands/java"
+  then
+    JAR="$MYJAVAHOME/Commands/jar"
+    JAVADOC="$MYJAVAHOME/Commands/javadoc"
+    JAVARUN="$MYJAVAHOME/Commands/java"
+  else
+    JAR="$MYJAVAHOME/bin/jar"
+    JAVADOC="$MYJAVAHOME/bin/javadoc"
+    JAVARUN="$MYJAVAHOME/bin/java"
+  fi
+else
+  JAR="$MYJAVAHOME/bin/jar"
+  JAVADOC="$MYJAVAHOME/bin/javadoc"
+  JAVARUN="$MYJAVAHOME/bin/java"
+fi
+MYJAVARUNFLAGS="$MYJAVARUNFLAGS -Djava.library.path=.:$LD_LIBRARY_PATH"
+
+printf 'checking MYGRPCJARDIR... '
+MYGRPCJARDIR=""
+for basedir in /usr/share/java /usr/local/share/java /usr/java /java
+do
+  if test -f "$basedir/grpc-core.jar"
+  then
+    MYGRPCJARDIR="$basedir"
+    break
+  fi
+done
+if test -n "$MYGRPCJARDIR"
+then
+  printf "%s\n" "$MYGRPCJARDIR"
+else
+  printf 'no\n'
+  printf '#================================================================\n' 1>&2
+  printf '# WARNING: GRPC JAR files are not found.\n' 1>&2
+  printf '#================================================================\n' 1>&2
+fi
+
+printf 'checking MYPROTOC... '
+MYPROTOC="protoc"
+protoc_path="`which protoc 2>/dev/null`"
+if test -n "$protoc_path"
+then
+  MYPROTOC="$protoc_path"
+  printf "%s\n" "$MYPROTOC"
+else
+  printf 'no\n'
+fi
+
+printf 'checking MYGRPCJAVAPLUGIN... '
+MYGRPCJAVAPLUGIN="grpc_java_plugin"
+grpc_java_plugin_path="`which grpc_java_plugin 2>/dev/null`"
+if test -n "$grpc_java_plugin_path"
+then
+  MYGRPCJAVAPLUGIN="$grpc_java_plugin_path"
+  printf "%s\n" "$MYGRPCJAVAPLUGIN"
+else
+  printf 'no\n'
+fi
+
+AC_SUBST(JAVAC)
+AC_SUBST(JAR)
+AC_SUBST(JAVADOC)
+AC_SUBST(JAVARUN)
+AC_SUBST(MYJARFILES)
+AC_SUBST(MYJAVAFILES)
+AC_SUBST(MYJAVAHOME)
+AC_SUBST(MYJAVACFLAGS)
+AC_SUBST(MYJAVADOCFLAGS)
+AC_SUBST(MYJAVARUNFLAGS)
+AC_SUBST(MYGRPCJARDIR)
+AC_SUBST(MYPROTOC)
+AC_SUBST(MYGRPCJAVAPLUGIN)
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+
+# END OF FILE

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Tkrzw, DBM, Java" />
+<meta name="description" content="API specifications of Java binding" />
+<link rel="contents" href="./" />
+<title>Java Binding of Tkrzw</title>
+</head>
+
+<body>
+
+<h1>Python client library of Tkrzw-RPC</h1>
+
+<h2>Introduction</h2>
+
+<p>The core package of Tkrzw-RPC provides a server program which manages databases of Tkrzw.  This package provides a Python client library to access the service via gRPC protocol.  Tkrzw is a library to mange key-value storages in various algorithms.  With Tkrzw, the application can handle database files efficiently in process without any network overhead.  However, it means that multiple processes cannot open the same database file simultaneously.  Tkrzw-RPC solves the issue by using a server program which manages database files and allowing other processes access the contents via RPC.</p>
+
+<p>The class "<a href="tkrzw_rpc/DBM.html">RemoteDBM</a>" has a similar API to the local DBM API, which represents an associative array aka a Map in Java.  Read the <a href="https://dbmx.net/tkrzw-rpc/">homepage</a> for details.</p>
+
+<p>DBM stores key-value pairs of strings.  Each string is represented as a byte array in Java.  Although you can also use methods with string arguments and return values, their internal representations are byte arrays.</p>
+
+<p>All classes are defined under the package "tkrzw_rpc", which can be imported in source files of application programs.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">import tkrzw_rpc.Status;
+import tkrzw_rpc.StatusException;
+import tkrzw_rpc.RemoteDBM;
+import tkrzw_rpc.Iterator;
+</pre>
+
+<p>An instance of the class "<a href="tkrzw_rpc/RemoteDBM.html">RemoteDBM</a>" is used in order to handle a database.  You can store, delete, and retrieve records with the instance.  The result status of each operation is represented by an object of the class "<a href="tkrzw_rpc/Status.html">Status</a>".  Iterator to access each record is implemented by the class "<a href="tkrzw_rpc/Iterator.html">Iterator</a>".</p>
+
+<h2>Installation</h2>
+
+<p>This package is independent of the core library of Tkrzw.  You don't have to install the core library.  Meanwhile, you have to install the library of gRPC for Java as described in the official document.  JDK 9.0 or later is required to use this package.</p>
+
+<p>Enter the directory of the extracted package then perform installation.  The environment variable JAVA_HOME must be set properly.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">./configure
+make
+sudo make install
+</pre>
+
+<p>When a series of work finishes, the JAR file "tkrzw_rpc.jar" is installed under "/usr/local/share/java".  Let the class search path include "/usr/local/share/java/tkrzw.jar".</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">CLASSPATH="$CLASSPATH:/usr/local/share/java/tkrzw.jar"
+export CLASSPATH
+</pre>
+
+<p>The above settings can be specified by options of the compiler and runtime command.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">javac -cp .:/usr/local/share/java/tkrzw.jar FooBarBaz.java ...
+java -cp .:/usr/local/share/java/tkrzw.jar FooBarBaz ...
+</pre>
+
+<p>To perform the integration tests, run these command on two respective terminals.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">tkrzw_server
+make check
+</pre>
+
+<h2>Example</h2>
+
+<p>Before running these examples, you have to run a database server by the following command.  It runs the server at the port 1978 on the local machine.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">tkrzw_server
+</pre>
+
+<p>The following code is a simple example to use a database, without checking errors.  Many methods accept both byte arrays and strings.  If strings are given, they are converted implicitly into byte arrays.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">import tkrzw_rpc.*;
+
+public class Example1 {
+  public static void main(String[] args) {
+    // Prepares the database.
+    RemoteDBM dbm = new RemoteDBM();
+    dbm.connect("localhost:1978", -1);
+    
+    // Sets records.
+    // Keys and values are implicitly converted into byte arrays.
+    dbm.set("first", "hop");
+    dbm.set("second", "step");
+    dbm.set("third", "jump");
+
+    // Retrieves record values.
+    // If the operation fails, null is returned.
+    // If the class of the key is String, the value is converted into String.
+    System.out.println(dbm.get("first"));
+    System.out.println(dbm.get("second"));
+    System.out.println(dbm.get("third"));
+    System.out.println(dbm.get("fourth"));
+
+    // Traverses records.
+    // After using the iterator, it should be destructed explicitly.
+    Iterator iter = dbm.makeIterator();
+    iter.first();
+    while (true) {
+      String[] record = iter.getString();
+      if (record == null) {
+        break;
+      }
+      System.out.println(record[0] + ": " + record[1]);
+      iter.next();
+    }
+    iter.destruct();
+
+    // Closes the connection.
+    // After using the database, it should be destructed explicitly.
+    dbm.disconnect();
+    dbm.destruct();
+  }
+}
+</pre>
+
+<p>The following code is a typical example to use a database, checking errors.  Usually, objects of RemoteDBM and Iterator should be destructed in "finally" blocks to avoid memory leak.  Even if the connection is not closed, the destructor closes it implicitly.  The method "orDie" throws an exception on failure so it is useful for checking errors.</p>
+
+<pre style="margin: 0em 0.8em; padding: 0.3em; background: #f8f8f8 none; border: 1px solid #dddddd; font-size: 90%;">import tkrzw_rpc.*;
+
+public class Example2 {
+  public static void main(String[] args) {
+    RemoteDBM dbm = new RemoteDBM();
+    try {
+      // Prepares the database.  The timeout is in seconds.
+      Status status = dbm.connect("localhost:1978", 10);
+      // Checks the status explicitly.
+      if (!status.isOK()) {
+        throw new StatusException(status);
+      }
+    
+      // Sets the index of the database to operate.
+      // The default value 0 means the first database on the server.
+      // 1 means the second one and 2 means the third one, if any.
+      dbm.setDBMIndex(0).orDie();
+          
+      // Sets records.
+      // Throws an exception on failure.
+      dbm.set("first", "hop").orDie();
+      dbm.set("second", "step").orDie();
+      dbm.set("third", "jump").orDie();
+
+      // Retrieves record values.
+      String[] keys = {"first", "second", "third", "fourth"};
+      for (String key : keys) {
+        // Gives a status object to check.
+        String value = dbm.get(key, status);
+        if (status.isOK()) {
+          System.out.println(value);
+        } else {
+          System.err.println(status);
+          if (!status.equals(Status.NOT_FOUND_ERROR)) {
+            throw new StatusException(status);
+          }
+        }
+      }
+
+      // Traverses records.
+      Iterator iter = dbm.makeIterator();
+      try {
+        iter.first();
+        while (true) {
+          String[] record = iter.getString(status);
+          if (!status.isOK()) {
+            if (!status.equals(Status.NOT_FOUND_ERROR)) {
+              throw new StatusException(status);
+            }
+            break;
+          }
+          System.out.println(record[0] + ": " + record[1]);
+          iter.next();
+        }
+      } finally {
+        // Release the resources.
+        iter.destruct();
+      }
+
+      // Closes the connection.
+      dbm.disconnect().orDie();
+    } finally {
+      // Release the resources.
+      dbm.destruct();
+    }
+  }
+}
+</pre>
+
+</body>
+
+</html>

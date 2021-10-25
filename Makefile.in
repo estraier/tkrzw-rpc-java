@@ -1,0 +1,114 @@
+SHELL = @SHELL@
+
+PACKAGE = @PACKAGE_NAME@
+VERSION = @PACKAGE_VERSION@
+PACKAGEDIR = $(PACKAGE)-$(VERSION)
+PACKAGETGZ = $(PACKAGE)-$(VERSION).tar.gz
+
+JARFILES = @MYJARFILES@
+JAVAFILES = @MYJAVAFILES@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
+JAVADIR = @datarootdir@/java
+
+JAVAC = @JAVAC@
+GRPCJARDIR = @MYGRPCJARDIR@
+JAVACFLAGS = @MYJAVACFLAGS@ -cp .:$(GRPCJARDIR)/*
+JAR = @JAR@
+JAVADOC = @JAVADOC@
+JAVADOCFLAGS = @MYJAVADOCFLAGS@ -cp .:$(GRPCJARDIR)/*
+JAVARUN = @JAVARUN@
+JAVARUNFLAGS = @MYJAVARUNFLAGS@ -cp .:$(GRPCJARDIR)/*
+PROTOC = @MYPROTOC@
+GRPCJAVAPLUGIN = @MYGRPCJAVAPLUGIN@
+
+all : $(JARFILES)
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Ready to install.\n'
+	@printf '#================================================================\n'
+
+clean :
+	rm -rf $(JARFILES) \
+	  *.o a.out *.class check.in check.out gmon.out *.vlog \
+	  casket* *.tkh *.tkt *.tks *.flat *.log *~ hoge moge tako ika uni
+
+untabify :
+	ls *.java | while read name ; \
+	  do \
+	    sed -e 's/\t/        /g' -e 's/ *$$//' $$name > $$name~; \
+	    [ -f $$name~ ] && mv -f $$name~ $$name ; \
+	  done
+
+install :
+	mkdir -p $(DESTDIR)$(JAVADIR)
+	cp -Rf $(JARFILES) $(DESTDIR)$(JAVADIR)
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Thanks for using Tkrzw-RPC for Java.\n'
+	@printf '#================================================================\n'
+
+uninstall :
+	cd $(DESTDIR)$(JAVADIR) && rm -f $(JARFILES)
+
+dist :
+	$(MAKE) untabify
+	$(MAKE) distclean
+	rm -Rf "../$(PACKAGEDIR)" "../$(PACKAGETGZ)"
+	cd .. && cp -R tkrzw-java $(PACKAGEDIR) && \
+	  tar --exclude=".*" -cvf - $(PACKAGEDIR) | gzip -c > $(PACKAGETGZ)
+	rm -Rf "../$(PACKAGEDIR)"
+	sync ; sync
+
+distclean : clean apidocclean
+	cd example && $(MAKE) clean
+	rm -rf Makefile config.cache config.log config.status config.tmp autom4te.cache tkrzw_rpc
+
+check :
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test status
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test basic
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test iter
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test thread
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test perf --iter 10000 --threads 3
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test perf --iter 10000 --threads 3 --random
+	$(RUNENV) $(JAVARUN) $(JAVARUNFLAGS) tkrzw_rpc.Test wicked --iter 5000 --threads 3
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Checking completed.\n'
+	@printf '#================================================================\n'
+
+apidoc :
+	$(MAKE) apidocclean
+	mkdir -p api-doc
+	mkdir -p api-doc-tmp
+	\ls *.java | grep -v -i "rpc\.java" | while read file ; \
+	  do \
+	    sed -e 's/public static class X/private static class X/' $$file > api-doc-tmp/$$file ; \
+	  done
+	$(JAVADOC) $(JAVADOCFLAGS) -windowtitle tkrzw -overview overview.html \
+	  -locale "en" -J-D"user.language=en" -d api-doc api-doc-tmp/*.java
+	rm -rf api-doc-tmp
+
+apidocclean :
+	rm -rf api-doc api-doc-tmp
+
+pbjava : tkrzw_rpc.proto
+	rm -rf tkrzw_rpc
+	$(PROTOC) --plugin=protoc-gen-grpc_java=$(GRPCJAVAPLUGIN) \
+	  --proto_path=. --java_out=. --grpc_java_out=. tkrzw_rpc.proto
+	mv tkrzw_rpc/*.java .
+	rm -rf tkrzw_rpc
+	sed -e 's/javax\.annotation\.Generated/javax.annotation.processing.Generated/g' \
+	  DBMServiceGrpc.java > ~DBMServiceGrpc.java
+	mv -f ~DBMServiceGrpc.java DBMServiceGrpc.java
+
+.PHONY : all clean install casket check apidoc apidocclean
+
+tkrzw_rpc.jar : $(JAVAFILES)
+	$(JAVAC) $(JAVACFLAGS) $(JAVAFILES)
+	$(JAR) cvf $@ tkrzw_rpc/*.class
+	rm -rf tkrzw
+
+# END OF FILE
