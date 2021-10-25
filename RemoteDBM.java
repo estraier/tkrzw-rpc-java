@@ -53,8 +53,7 @@ public class RemoteDBM {
   /**
    * Connects to the server.
    * @param address The address or the host name of the server and its port number.  For IPv4
-   * address, it's like "127.0.0.1:1978".  For IPv6, it's like "[::1]:1978".  For UNIX domain
-   * sockets, it's like "unix:/path/to/file".
+   * address, it's like "127.0.0.1:1978".  For IPv6, it's like "[::1]:1978".
    * @param timeout The timeout in seconds for connection and each operation.  Negative means
    * unlimited.
    * @return The result status.
