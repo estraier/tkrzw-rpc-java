@@ -18,11 +18,16 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.GrpcSslContexts;
 import io.netty.channel.ChannelOption;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.Map;
+import javax.net.ssl.SSLException;
 
 /**
  * Remote database manager.
@@ -31,7 +36,6 @@ import java.util.Map;
  * shared.
  */
 public class RemoteDBM {
-
   /**
    * Constructor.
    */
@@ -56,18 +60,65 @@ public class RemoteDBM {
    * address, it's like "127.0.0.1:1978".  For IPv6, it's like "[::1]:1978".
    * @param timeout The timeout in seconds for connection and each operation.  Negative means
    * unlimited.
+   * @param auth_config The authentication configuration.  It it is empty or null, no
+   * authentication is done.  If it begins with "ssl:", the SSL authentication is done.
+   * Key-value parameters in "key=value,key=value,..." format comes next.  For SSL, "key",
+   * "cert", and "root" parameters specify the paths of the client private key file, the client
+   * certificate file, and the root CA certificate file respectively.  SSL is usable only if
+   * the Java runtime system supports the TLS and ALPN protocol.
    * @return The result status.
    */
-  public Status connect(String address, double timeout) {
+  public Status connect(String address, double timeout, String auth_config) {
     if (stub_ != null) {
       return new Status(Status.PRECONDITION_ERROR, "opened connection");
     }
     if (timeout < 0) {
       timeout = 1 << 24;
     }
-    channel_ = NettyChannelBuilder.forTarget(address)
-        .withOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int)(timeout * 1000))
-        .usePlaintext().build();
+    NettyChannelBuilder builder = NettyChannelBuilder.forTarget(address)
+        .withOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int)(timeout * 1000));
+    if (auth_config != null && auth_config.length() > 0) {
+      if (auth_config.startsWith("ssl:")) {
+        String key_path = null;
+        String cert_path = null;
+        String root_path = null;
+        String[] fields = auth_config.substring(4).split(",");
+        for (String field : fields) {
+          String[] columns = field.split("=");
+          if (columns.length == 2) {
+            if (columns[0].equals("key")) {
+              key_path = columns[1];
+            } else if (columns[0].equals("cert")) {
+              cert_path = columns[1];
+            } else if (columns[0].equals("root")) {
+              root_path = columns[1];
+            }
+          }
+        }
+        if (key_path == null) {
+          return new Status(Status.INVALID_ARGUMENT_ERROR, "client private key unspecified");
+        }
+        if (cert_path == null) {
+          return new Status(Status.INVALID_ARGUMENT_ERROR, "client certificate unspecified");
+        }
+        if (root_path == null) {
+          return new Status(Status.INVALID_ARGUMENT_ERROR, "root certificate unspecified");
+        }
+        try {
+          SslContextBuilder sslBuilder = GrpcSslContexts.forClient()
+              .keyManager(new File(cert_path), new File(key_path))
+              .trustManager(new File(root_path));
+          builder = builder.sslContext(sslBuilder.build()).useTransportSecurity();
+        } catch (Exception e) {
+          return new Status(Status.INVALID_ARGUMENT_ERROR, e.toString());
+        }
+      } else {
+        return new Status(Status.INVALID_ARGUMENT_ERROR, "unknown authentication mode");
+      }
+    } else {
+      builder = builder.usePlaintext();
+    }
+    channel_ = builder.build();
     try {
       stub_ = DBMServiceGrpc.newBlockingStub(channel_);
       asyncStub_ = DBMServiceGrpc.newStub(channel_);
@@ -84,6 +135,28 @@ public class RemoteDBM {
       asyncStub_ = null;
       return new Status(Status.NETWORK_ERROR, e.toString());
     }
+  }
+
+  /**
+   * Conects to the server.
+   * @param address The address or the host name of the server and its port number.  For IPv4
+   * address, it's like "127.0.0.1:1978".  For IPv6, it's like "[::1]:1978".
+   * @param timeout The timeout in seconds for connection and each operation.  Negative means
+   * unlimited.
+   * @return The result status.
+   */
+  public Status connect(String address, double timeout) {
+    return connect(address, timeout, null);
+  }
+
+  /**
+   * Conects to the server.
+   * @param address The address or the host name of the server and its port number.  For IPv4
+   * address, it's like "127.0.0.1:1978".  For IPv6, it's like "[::1]:1978".
+   * @return The result status.
+   */
+  public Status connect(String address) {
+    return connect(address, -1);
   }
 
   /**

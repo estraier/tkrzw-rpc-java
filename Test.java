@@ -48,6 +48,7 @@ public class Test {
       rv = runThread();
     } else if (args[0].equals("perf")) {
       String address = "localhost:1978";
+      String auth_config = "";
       int num_iterations = 10000;
       int num_threads = 1;
       boolean is_random = false;
@@ -56,6 +57,9 @@ public class Test {
         if (arg.equals("--address")) {
           i++;
           address = args[i];
+        } else if (arg.equals("--auth")) {
+          i++;
+          auth_config = args[i];
         } else if (arg.equals("--iter")) {
           i++;
           num_iterations = atoi(args[i]);
@@ -68,9 +72,10 @@ public class Test {
           usage();
         }
       }
-      rv = runPerf(address, num_iterations, num_threads, is_random);
+      rv = runPerf(address, auth_config, num_iterations, num_threads, is_random);
     } else if (args[0].equals("wicked")) {
       String address = "localhost:1978";
+      String auth_config = "";
       int num_iterations = 10000;
       int num_threads = 1;
       for (int i = 1; i < args.length; i++) {
@@ -78,6 +83,9 @@ public class Test {
         if (arg.equals("--address")) {
           i++;
           address = args[i];
+        } else if (arg.equals("--auth")) {
+          i++;
+          auth_config = args[i];
         } else if (arg.equals("--iter")) {
           i++;
           num_iterations = atoi(args[i]);
@@ -88,7 +96,7 @@ public class Test {
           usage();
         }
       }
-      rv = runWicked(address, num_iterations, num_threads);
+      rv = runWicked(address, auth_config, num_iterations, num_threads);
     } else {
       usage();
     }
@@ -110,8 +118,8 @@ public class Test {
     STDERR.printf("  basic\n");
     STDERR.printf("  iter\n");
     STDERR.printf("  thread\n");
-    STDERR.printf("  perf [--path num] [--iter num] [--threads num] [--random]\n");
-    STDERR.printf("  wicked [--path num] [--iter num] [--threads num]");
+    STDERR.printf("  perf [--address str] [--auth str] [--iter num] [--threads num] [--random]\n");
+    STDERR.printf("  wicked [--address str] [--auth str] [--iter num] [--threads num]");
     STDERR.printf("\n");
     System.exit(1);
   }
@@ -559,8 +567,8 @@ public class Test {
   /**
    * Runs the perf test.
    */
-  private static int runPerf(String address, int num_iterations, int num_threads,
-                             boolean is_random) {
+  private static int runPerf(String address, String auth_config,
+                             int num_iterations, int num_threads, boolean is_random) {
     STDOUT.printf("address: %s\n", address);
     STDOUT.printf("num_iterations: %d\n", num_iterations);
     STDOUT.printf("num_threads: %d\n", num_threads);
@@ -568,7 +576,7 @@ public class Test {
     STDOUT.printf("\n");
     System.gc();
     RemoteDBM dbm = new RemoteDBM();
-    dbm.connect(address, -1).orDie();
+    dbm.connect(address, -1, auth_config).orDie();
     check(dbm.clear().equals(Status.SUCCESS));
     class Echoer extends Thread {
       public Echoer(int thid) {
@@ -619,6 +627,34 @@ public class Test {
     STDOUT.printf("Echoing done: time=%.3f qps=%.0f\n",
                   elapsed, num_iterations * num_threads / elapsed);
     STDOUT.print("\n");
+
+
+
+
+    STDOUT.printf("Echoing2:\n");
+    start_time = getTime();
+    echoers = new Echoer[num_threads];
+    for (int thid = 0; thid < num_threads; thid++) {
+      echoers[thid] = new Echoer(thid);
+      echoers[thid].start();
+    }
+    for (int thid = 0; thid < num_threads; thid++) {
+      try {
+        echoers[thid].join();
+      } catch (java.lang.InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    end_time = getTime();
+    elapsed = end_time - start_time;
+    System.gc();
+    STDOUT.printf("Echoing done: time=%.3f qps=%.0f\n",
+                  elapsed, num_iterations * num_threads / elapsed);
+    STDOUT.print("\n");
+
+
+
+
     class Setter extends Thread {
       public Setter(int thid) {
         thid_ = thid;
@@ -780,14 +816,15 @@ public class Test {
   /**
    * Runs the wicked test.
    */
-  private static int runWicked(String address, int num_iterations, int num_threads) {
+  private static int runWicked(String address, String auth_config,
+                               int num_iterations, int num_threads) {
     STDOUT.printf("address: %s\n", address);
     STDOUT.printf("num_iterations: %d\n", num_iterations);
     STDOUT.printf("num_threads: %d\n", num_threads);
     STDOUT.printf("\n");
     System.gc();
     RemoteDBM dbm = new RemoteDBM();
-    dbm.connect(address, -1).orDie();
+    dbm.connect(address, -1, auth_config).orDie();
     dbm.clear().orDie();
     Map<String, String> attrs = dbm.inspect();
     String className = attrs.get("class");

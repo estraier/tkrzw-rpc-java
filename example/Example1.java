@@ -17,7 +17,7 @@ public class Example1 {
   public static void main(String[] args) {
     // Prepares the database.
     RemoteDBM dbm = new RemoteDBM();
-    dbm.connect("localhost:1978", -1);
+    dbm.connect("localhost:1978");
     
     // Sets records.
     // Keys and values are implicitly converted into byte arrays.
