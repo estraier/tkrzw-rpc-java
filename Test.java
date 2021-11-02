@@ -303,6 +303,30 @@ public class Test {
     check(dbm.compareExchange("one", null, "hello").equals(Status.SUCCESS));
     check(dbm.get("one").equals("hello"));
     check(dbm.compareExchange("one", null, "hello").equals(Status.INFEASIBLE_ERROR));
+    check(dbm.compareExchange("xyz", RemoteDBM.ANY_STRING, RemoteDBM.ANY_STRING)
+          .equals(Status.INFEASIBLE_ERROR));
+    check(dbm.compareExchange("xyz", null, "abc").equals(Status.SUCCESS));
+    check(dbm.compareExchange("xyz", RemoteDBM.ANY_STRING, RemoteDBM.ANY_STRING)
+          .equals(Status.SUCCESS));
+    check(dbm.get("xyz").equals("abc"));
+    check(dbm.compareExchange("xyz", RemoteDBM.ANY_STRING, "def").equals(Status.SUCCESS));
+    check(dbm.get("xyz").equals("def"));
+    check(dbm.compareExchange("xyz", RemoteDBM.ANY_STRING, null).equals(Status.SUCCESS));
+    check(dbm.get("xyz") == null);
+    Status.And<String> sv = dbm.compareExchangeAndGet(
+        "xyz", RemoteDBM.ANY_STRING, RemoteDBM.ANY_STRING);
+    check(sv.status.equals(Status.INFEASIBLE_ERROR));
+    check(sv.value == null);
+    sv = dbm.compareExchangeAndGet("xyz", null, "abc");
+    check(sv.status.equals(Status.SUCCESS));
+    check(sv.value == null);
+    sv = dbm.compareExchangeAndGet("xyz", RemoteDBM.ANY_STRING, "def");
+    check(sv.status.equals(Status.SUCCESS));
+    check(sv.value.equals("abc"));
+    sv =dbm.compareExchangeAndGet("xyz", "def", null);
+    check(sv.status.equals(Status.SUCCESS));
+    check(sv.value.equals("def"));
+    check(dbm.get("xyz") == null);
     Map<String, String> expected = new HashMap<String, String>();
     expected.put("one", "hello");
     expected.put("two", "second:2");
@@ -321,6 +345,29 @@ public class Test {
     check(dbm.compareExchangeMultiString(expected, desired).equals(Status.SUCCESS));
     check(dbm.get("one").equals("first"));
     check(dbm.get("two").equals("second"));
+    expected = new HashMap<String, String>();
+    expected.put("xyz", RemoteDBM.ANY_STRING);
+    desired = new HashMap<String, String>();
+    desired.put("xyz", "abc");
+    check(dbm.compareExchangeMultiString(expected, desired).equals(Status.INFEASIBLE_ERROR));
+    expected = new HashMap<String, String>();
+    expected.put("xyz", null);
+    desired = new HashMap<String, String>();
+    desired.put("xyz", "abc");
+    check(dbm.compareExchangeMultiString(expected, desired).equals(Status.SUCCESS));
+    check(dbm.get("xyz").equals("abc"));
+    expected = new HashMap<String, String>();
+    expected.put("xyz", RemoteDBM.ANY_STRING);
+    desired = new HashMap<String, String>();
+    desired.put("xyz", "def");
+    check(dbm.compareExchangeMultiString(expected, desired).equals(Status.SUCCESS));
+    check(dbm.get("xyz").equals("def"));
+    expected = new HashMap<String, String>();
+    expected.put("xyz", RemoteDBM.ANY_STRING);
+    desired = new HashMap<String, String>();
+    desired.put("xyz", null);
+    check(dbm.compareExchangeMultiString(expected, desired).equals(Status.SUCCESS));
+    check(dbm.get("xyz") == null);
     status.set(Status.UNKNOWN_ERROR, "");
     check(dbm.increment("num", 5, 100, status) == 105);
     check(status.equals(Status.SUCCESS));
@@ -425,7 +472,6 @@ public class Test {
       check(iter.getKeyString() == null);
       check(dbm.count() == 8);
     } else {
-      STDOUT.println(status);
       check(status.equals(Status.NOT_IMPLEMENTED_ERROR));
     }
     check(dbm.clear().equals(Status.SUCCESS));
@@ -627,34 +673,6 @@ public class Test {
     STDOUT.printf("Echoing done: time=%.3f qps=%.0f\n",
                   elapsed, num_iterations * num_threads / elapsed);
     STDOUT.print("\n");
-
-
-
-
-    STDOUT.printf("Echoing2:\n");
-    start_time = getTime();
-    echoers = new Echoer[num_threads];
-    for (int thid = 0; thid < num_threads; thid++) {
-      echoers[thid] = new Echoer(thid);
-      echoers[thid].start();
-    }
-    for (int thid = 0; thid < num_threads; thid++) {
-      try {
-        echoers[thid].join();
-      } catch (java.lang.InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    end_time = getTime();
-    elapsed = end_time - start_time;
-    System.gc();
-    STDOUT.printf("Echoing done: time=%.3f qps=%.0f\n",
-                  elapsed, num_iterations * num_threads / elapsed);
-    STDOUT.print("\n");
-
-
-
-
     class Setter extends Thread {
       public Setter(int thid) {
         thid_ = thid;

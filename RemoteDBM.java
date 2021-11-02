@@ -37,6 +37,16 @@ import javax.net.ssl.SSLException;
  */
 public class RemoteDBM {
   /**
+   * The special bytes value for no-operation or any data.
+   */
+  static public byte[] ANY_BYTES = new String("\0[ANY_BYTES]\0").getBytes(StandardCharsets.UTF_8);
+
+  /**
+   * The special string value for no-operation or any data.
+   */
+  static public String ANY_STRING = new String("\0[ANY_STRING]\0");
+
+  /**
    * Constructor.
    */
   public RemoteDBM() {}
@@ -682,8 +692,10 @@ public class RemoteDBM {
   /**
    * Compares the value of a record and exchanges if the condition meets.
    * @param key The key of the record.
-   * @param expected The expected value.  If it is null, no existing record is expected.
-   * @param desired The desired value.  If it is null, the record is to be removed.
+   * @param expected The expected value.  If it is null, no existing record is expected.  If it
+   * is ANY_BYTES, an existing record with any value is expacted.
+   * @param desired The desired value.  If it is null, the record is to be removed.  If it is
+   * ANY_BYTES, no update is done.
    * @return The result status.  If the condition doesn't meet, INFEASIBLE_ERROR is returned.
    */
   public Status compareExchange(byte[] key, byte[] expected, byte[] desired) {
@@ -695,12 +707,21 @@ public class RemoteDBM {
     request.setDbmIndex(dbmIndex_);
     request.setKey(ByteString.copyFrom(key));
     if (expected != null) {
-      request.setExpectedExistence(true);
-      request.setExpectedValue(ByteString.copyFrom(expected));
+      if (expected == ANY_BYTES) {
+        request.setExpectedExistence(true);
+        request.setExpectAnyValue(true);
+      } else {
+        request.setExpectedExistence(true);
+        request.setExpectedValue(ByteString.copyFrom(expected));
+      }
     }
     if (desired != null) {
-      request.setDesiredExistence(true);
-      request.setDesiredValue(ByteString.copyFrom(desired));
+      if (desired == ANY_BYTES) {
+        request.setDesireNoUpdate(true);
+      } else {
+        request.setDesiredExistence(true);
+        request.setDesiredValue(ByteString.copyFrom(desired));
+      }
     }
     TkrzwRpc.CompareExchangeResponse response;
     try {
@@ -715,14 +736,112 @@ public class RemoteDBM {
   /**
    * Compares the value of a record and exchanges if the condition meets, with string data.
    * @param key The key of the record.
-   * @param expected The expected value.  If it is null, no existing record is expected.
-   * @param desired The desired value.  If it is null, the record is to be removed.
+   * @param expected The expected value.  If it is null, no existing record is expected.  If it
+   * is ANY_STRING, an existing record with any value is expacted.
+   * @param desired The desired value.  If it is null, the record is to be removed.  If it is
+   * ANY_STRING, no update is done.
    * @return The result status.  If the condition doesn't meet, INFEASIBLE_ERROR is returned.
    */
   public Status compareExchange(String key, String expected, String desired) {
-    return compareExchange(key.getBytes(StandardCharsets.UTF_8),
-                           expected == null ? null : expected.getBytes(StandardCharsets.UTF_8),
-                           desired == null ? null : desired.getBytes(StandardCharsets.UTF_8));
+    byte[] rawExpected = null;
+    if (expected == ANY_STRING) {
+      rawExpected = ANY_BYTES;
+    } else if (expected != null) {
+      rawExpected = expected.getBytes(StandardCharsets.UTF_8);
+    }
+    byte[] rawDesired = null;
+    if (desired == ANY_STRING) {
+      rawDesired = ANY_BYTES;
+    } else if (desired != null) {
+      rawDesired = desired.getBytes(StandardCharsets.UTF_8);
+    }
+    return compareExchange(key.getBytes(StandardCharsets.UTF_8), rawExpected, rawDesired);
+  }
+
+  /**
+   * Does compare-and-exchange and/or gets the old value of the record.
+   * @param key The key of the record.
+   * @param expected The expected value.  If it is null, no existing record is expected.  If it
+   * is ANY_BYTES, an existing record with any value is expacted.
+   * @param desired The desired value.  If it is null, the record is to be removed.  If it is
+   * ANY_BYTES, no update is done.
+   * @return The result status and the.old value of the record  If the condition doesn't meet,
+   * the state is INFEASIBLE_ERROR.  If there's no existing record, the value is null.
+   */
+  public Status.And<byte[]> compareExchangeAndGet(
+      byte[] key, byte[] expected, byte[] desired) {
+    Status.And<byte[]> result = new Status.And<byte[]>();
+    if (stub_ == null) {
+      result.status = new Status(Status.PRECONDITION_ERROR, "not opened connection");
+      return result;
+    }
+    TkrzwRpc.CompareExchangeRequest.Builder request =
+        TkrzwRpc.CompareExchangeRequest.newBuilder();
+    request.setDbmIndex(dbmIndex_);
+    request.setKey(ByteString.copyFrom(key));
+    if (expected != null) {
+      if (expected == ANY_BYTES) {
+        request.setExpectedExistence(true);
+        request.setExpectAnyValue(true);
+      } else {
+        request.setExpectedExistence(true);
+        request.setExpectedValue(ByteString.copyFrom(expected));
+      }
+    }
+    if (desired != null) {
+      if (desired == ANY_BYTES) {
+        request.setDesireNoUpdate(true);
+      } else {
+        request.setDesiredExistence(true);
+        request.setDesiredValue(ByteString.copyFrom(desired));
+      }
+    }
+    request.setGetActual(true);
+    TkrzwRpc.CompareExchangeResponse response;
+    try {
+      response = stub_.withDeadlineAfter((long)(timeout_ * 1000), TimeUnit.SECONDS)
+          .compareExchange(request.build());
+    } catch (Exception e) {
+      result.status = new Status(Status.NETWORK_ERROR, e.toString());
+      return result;
+    }
+    result.status = new Status(response.getStatus());
+    if (response.getFound()) {
+      result.value = response.getActual().toByteArray();
+    }
+    return result;
+  }
+
+  /**
+   * Does compare-and-exchange and/or gets the old value of the record.
+   * @param key The key of the record.
+   * @param expected The expected value.  If it is null, no existing record is expected.  If it
+   * is ANY_STRING, an existing record with any value is expacted.
+   * @param desired The desired value.  If it is null, the record is to be removed.  If it is
+   * ANY_STRING, no update is done.
+   * @return The result status and the.old value of the record  If the condition doesn't meet,
+   * the state is INFEASIBLE_ERROR.  If there's no existing record, the value is null.
+   */
+  public Status.And<String> compareExchangeAndGet(String key, String expected, String desired) {
+    byte[] rawExpected = null;
+    if (expected == ANY_STRING) {
+      rawExpected = ANY_BYTES;
+    } else if (expected != null) {
+      rawExpected = expected.getBytes(StandardCharsets.UTF_8);
+    }
+    byte[] rawDesired = null;
+    if (desired == ANY_STRING) {
+      rawDesired = ANY_BYTES;
+    } else if (desired != null) {
+      rawDesired = desired.getBytes(StandardCharsets.UTF_8);
+    }
+    Status.And<byte[]> rawResult =
+        compareExchangeAndGet(key.getBytes(StandardCharsets.UTF_8), rawExpected, rawDesired);
+    Status.And<String> result = new Status.And<String>();
+    result.status = rawResult.status;
+    result.value = rawResult.value ==
+        null ? null : new String(rawResult.value,  StandardCharsets.UTF_8);
+    return result;
   }
 
   /**
@@ -782,7 +901,8 @@ public class RemoteDBM {
   /**
    * Compares the values of records and exchanges if the condition meets.
    * @param expected The record keys and their expected values.  If the value is null, no existing
-   * record is expected.
+   * record is expected.  If the value is ANY_BYTES, an existing record with any value is
+   * expacted.
    * @param desired The record keys and their desired values.  If the value is null, the record
    * is to be removed.
    * @return The result status.  If the condition doesn't meet, INFEASIBLE_ERROR is returned.
@@ -797,17 +917,24 @@ public class RemoteDBM {
     for (Map.Entry<byte[], byte[]> record : expected.entrySet()) {
       TkrzwRpc.RecordState.Builder req_record = request.addExpectedBuilder();
       req_record.setKey(ByteString.copyFrom(record.getKey()));
-      if (record.getValue() != null) {
-        req_record.setExistence(true);
-        req_record.setValue(ByteString.copyFrom(record.getValue()));
+      byte[] value = record.getValue();
+      if (value != null) {
+        if (value == ANY_BYTES) {
+          req_record.setExistence(true);
+          req_record.setAnyValue(true);
+        } else {
+          req_record.setExistence(true);
+          req_record.setValue(ByteString.copyFrom(value));
+        }
       }
     }
     for (Map.Entry<byte[], byte[]> record : desired.entrySet()) {
       TkrzwRpc.RecordState.Builder req_record = request.addDesiredBuilder();
       req_record.setKey(ByteString.copyFrom(record.getKey()));
-      if (record.getValue() != null) {
+      byte[] value = record.getValue();
+      if (value != null) {
         req_record.setExistence(true);
-        req_record.setValue(ByteString.copyFrom(record.getValue()));
+        req_record.setValue(ByteString.copyFrom(value));
       }
     }
     TkrzwRpc.CompareExchangeMultiResponse response;
@@ -823,7 +950,8 @@ public class RemoteDBM {
   /**
    * Compares the values of records and exchanges if the condition meets, with string data.
    * @param expected The record keys and their expected values.  If the data is null, no existing
-   * record is expected.
+   * record is expected.  If the value is ANY_STRING, an existing record with any value is
+   * expacted.
    * @param desired The record keys and their desired values.  If the data is null, the record
    * is to be removed.
    * @return The result status.  If the condition doesn't meet, INFEASIBLE_ERROR is returned.
@@ -834,7 +962,12 @@ public class RemoteDBM {
     for (Map.Entry<String, String> record : expected.entrySet()) {
       byte[] rawKey = record.getKey().getBytes(StandardCharsets.UTF_8);
       String value = record.getValue();
-      byte[] rawValue = value == null ? null : value.getBytes(StandardCharsets.UTF_8);
+      byte[] rawValue = null;
+      if (value == ANY_STRING) {
+        rawValue = ANY_BYTES;
+      } else if (value != null) {
+        rawValue = value.getBytes(StandardCharsets.UTF_8);
+      }
       rawExpected.put(rawKey, rawValue);
     }
     Map<byte[], byte[]> rawDesired = new HashMap<byte[], byte[]>();

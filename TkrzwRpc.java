@@ -2161,6 +2161,16 @@ public final class TkrzwRpc {
      * @return The value.
      */
     com.google.protobuf.ByteString getValue();
+
+    /**
+     * <pre>
+     * True to accept any value.
+     * </pre>
+     *
+     * <code>bool any_value = 4;</code>
+     * @return The anyValue.
+     */
+    boolean getAnyValue();
   }
   /**
    * <pre>
@@ -2226,6 +2236,11 @@ public final class TkrzwRpc {
             case 26: {
 
               value_ = input.readBytes();
+              break;
+            }
+            case 32: {
+
+              anyValue_ = input.readBool();
               break;
             }
             default: {
@@ -2305,6 +2320,21 @@ public final class TkrzwRpc {
       return value_;
     }
 
+    public static final int ANY_VALUE_FIELD_NUMBER = 4;
+    private boolean anyValue_;
+    /**
+     * <pre>
+     * True to accept any value.
+     * </pre>
+     *
+     * <code>bool any_value = 4;</code>
+     * @return The anyValue.
+     */
+    @java.lang.Override
+    public boolean getAnyValue() {
+      return anyValue_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2328,6 +2358,9 @@ public final class TkrzwRpc {
       if (!value_.isEmpty()) {
         output.writeBytes(3, value_);
       }
+      if (anyValue_ != false) {
+        output.writeBool(4, anyValue_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -2348,6 +2381,10 @@ public final class TkrzwRpc {
       if (!value_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, value_);
+      }
+      if (anyValue_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, anyValue_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2370,6 +2407,8 @@ public final class TkrzwRpc {
           .equals(other.getKey())) return false;
       if (!getValue()
           .equals(other.getValue())) return false;
+      if (getAnyValue()
+          != other.getAnyValue()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2388,6 +2427,9 @@ public final class TkrzwRpc {
       hash = (53 * hash) + getKey().hashCode();
       hash = (37 * hash) + VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getValue().hashCode();
+      hash = (37 * hash) + ANY_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAnyValue());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2531,6 +2573,8 @@ public final class TkrzwRpc {
 
         value_ = com.google.protobuf.ByteString.EMPTY;
 
+        anyValue_ = false;
+
         return this;
       }
 
@@ -2560,6 +2604,7 @@ public final class TkrzwRpc {
         result.existence_ = existence_;
         result.key_ = key_;
         result.value_ = value_;
+        result.anyValue_ = anyValue_;
         onBuilt();
         return result;
       }
@@ -2616,6 +2661,9 @@ public final class TkrzwRpc {
         }
         if (other.getValue() != com.google.protobuf.ByteString.EMPTY) {
           setValue(other.getValue());
+        }
+        if (other.getAnyValue() != false) {
+          setAnyValue(other.getAnyValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2777,6 +2825,49 @@ public final class TkrzwRpc {
       public Builder clearValue() {
 
         value_ = getDefaultInstance().getValue();
+        onChanged();
+        return this;
+      }
+
+      private boolean anyValue_ ;
+      /**
+       * <pre>
+       * True to accept any value.
+       * </pre>
+       *
+       * <code>bool any_value = 4;</code>
+       * @return The anyValue.
+       */
+      @java.lang.Override
+      public boolean getAnyValue() {
+        return anyValue_;
+      }
+      /**
+       * <pre>
+       * True to accept any value.
+       * </pre>
+       *
+       * <code>bool any_value = 4;</code>
+       * @param value The anyValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAnyValue(boolean value) {
+
+        anyValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * True to accept any value.
+       * </pre>
+       *
+       * <code>bool any_value = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAnyValue() {
+
+        anyValue_ = false;
         onChanged();
         return this;
       }
@@ -18745,10 +18836,20 @@ public final class TkrzwRpc {
 
     /**
      * <pre>
+     * True to expect any value.
+     * </pre>
+     *
+     * <code>bool expect_any_value = 5;</code>
+     * @return The expectAnyValue.
+     */
+    boolean getExpectAnyValue();
+
+    /**
+     * <pre>
      * Whether the record is desired to exists.
      * </pre>
      *
-     * <code>bool desired_existence = 5;</code>
+     * <code>bool desired_existence = 6;</code>
      * @return The desiredExistence.
      */
     boolean getDesiredExistence();
@@ -18758,10 +18859,30 @@ public final class TkrzwRpc {
      * The desired value.
      * </pre>
      *
-     * <code>bytes desired_value = 6;</code>
+     * <code>bytes desired_value = 7;</code>
      * @return The desiredValue.
      */
     com.google.protobuf.ByteString getDesiredValue();
+
+    /**
+     * <pre>
+     * True to do no update.
+     * </pre>
+     *
+     * <code>bool desire_no_update = 8;</code>
+     * @return The desireNoUpdate.
+     */
+    boolean getDesireNoUpdate();
+
+    /**
+     * <pre>
+     * True to get the actual value of the existing record.
+     * </pre>
+     *
+     * <code>bool get_actual = 9;</code>
+     * @return The getActual.
+     */
+    boolean getGetActual();
   }
   /**
    * <pre>
@@ -18837,12 +18958,27 @@ public final class TkrzwRpc {
             }
             case 40: {
 
+              expectAnyValue_ = input.readBool();
+              break;
+            }
+            case 48: {
+
               desiredExistence_ = input.readBool();
               break;
             }
-            case 50: {
+            case 58: {
 
               desiredValue_ = input.readBytes();
+              break;
+            }
+            case 64: {
+
+              desireNoUpdate_ = input.readBool();
+              break;
+            }
+            case 72: {
+
+              getActual_ = input.readBool();
               break;
             }
             default: {
@@ -18937,14 +19073,29 @@ public final class TkrzwRpc {
       return expectedValue_;
     }
 
-    public static final int DESIRED_EXISTENCE_FIELD_NUMBER = 5;
+    public static final int EXPECT_ANY_VALUE_FIELD_NUMBER = 5;
+    private boolean expectAnyValue_;
+    /**
+     * <pre>
+     * True to expect any value.
+     * </pre>
+     *
+     * <code>bool expect_any_value = 5;</code>
+     * @return The expectAnyValue.
+     */
+    @java.lang.Override
+    public boolean getExpectAnyValue() {
+      return expectAnyValue_;
+    }
+
+    public static final int DESIRED_EXISTENCE_FIELD_NUMBER = 6;
     private boolean desiredExistence_;
     /**
      * <pre>
      * Whether the record is desired to exists.
      * </pre>
      *
-     * <code>bool desired_existence = 5;</code>
+     * <code>bool desired_existence = 6;</code>
      * @return The desiredExistence.
      */
     @java.lang.Override
@@ -18952,19 +19103,49 @@ public final class TkrzwRpc {
       return desiredExistence_;
     }
 
-    public static final int DESIRED_VALUE_FIELD_NUMBER = 6;
+    public static final int DESIRED_VALUE_FIELD_NUMBER = 7;
     private com.google.protobuf.ByteString desiredValue_;
     /**
      * <pre>
      * The desired value.
      * </pre>
      *
-     * <code>bytes desired_value = 6;</code>
+     * <code>bytes desired_value = 7;</code>
      * @return The desiredValue.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString getDesiredValue() {
       return desiredValue_;
+    }
+
+    public static final int DESIRE_NO_UPDATE_FIELD_NUMBER = 8;
+    private boolean desireNoUpdate_;
+    /**
+     * <pre>
+     * True to do no update.
+     * </pre>
+     *
+     * <code>bool desire_no_update = 8;</code>
+     * @return The desireNoUpdate.
+     */
+    @java.lang.Override
+    public boolean getDesireNoUpdate() {
+      return desireNoUpdate_;
+    }
+
+    public static final int GET_ACTUAL_FIELD_NUMBER = 9;
+    private boolean getActual_;
+    /**
+     * <pre>
+     * True to get the actual value of the existing record.
+     * </pre>
+     *
+     * <code>bool get_actual = 9;</code>
+     * @return The getActual.
+     */
+    @java.lang.Override
+    public boolean getGetActual() {
+      return getActual_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -18993,11 +19174,20 @@ public final class TkrzwRpc {
       if (!expectedValue_.isEmpty()) {
         output.writeBytes(4, expectedValue_);
       }
+      if (expectAnyValue_ != false) {
+        output.writeBool(5, expectAnyValue_);
+      }
       if (desiredExistence_ != false) {
-        output.writeBool(5, desiredExistence_);
+        output.writeBool(6, desiredExistence_);
       }
       if (!desiredValue_.isEmpty()) {
-        output.writeBytes(6, desiredValue_);
+        output.writeBytes(7, desiredValue_);
+      }
+      if (desireNoUpdate_ != false) {
+        output.writeBool(8, desireNoUpdate_);
+      }
+      if (getActual_ != false) {
+        output.writeBool(9, getActual_);
       }
       unknownFields.writeTo(output);
     }
@@ -19024,13 +19214,25 @@ public final class TkrzwRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, expectedValue_);
       }
+      if (expectAnyValue_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, expectAnyValue_);
+      }
       if (desiredExistence_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, desiredExistence_);
+          .computeBoolSize(6, desiredExistence_);
       }
       if (!desiredValue_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, desiredValue_);
+          .computeBytesSize(7, desiredValue_);
+      }
+      if (desireNoUpdate_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, desireNoUpdate_);
+      }
+      if (getActual_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(9, getActual_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -19055,10 +19257,16 @@ public final class TkrzwRpc {
           != other.getExpectedExistence()) return false;
       if (!getExpectedValue()
           .equals(other.getExpectedValue())) return false;
+      if (getExpectAnyValue()
+          != other.getExpectAnyValue()) return false;
       if (getDesiredExistence()
           != other.getDesiredExistence()) return false;
       if (!getDesiredValue()
           .equals(other.getDesiredValue())) return false;
+      if (getDesireNoUpdate()
+          != other.getDesireNoUpdate()) return false;
+      if (getGetActual()
+          != other.getGetActual()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -19079,11 +19287,20 @@ public final class TkrzwRpc {
           getExpectedExistence());
       hash = (37 * hash) + EXPECTED_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getExpectedValue().hashCode();
+      hash = (37 * hash) + EXPECT_ANY_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getExpectAnyValue());
       hash = (37 * hash) + DESIRED_EXISTENCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getDesiredExistence());
       hash = (37 * hash) + DESIRED_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getDesiredValue().hashCode();
+      hash = (37 * hash) + DESIRE_NO_UPDATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getDesireNoUpdate());
+      hash = (37 * hash) + GET_ACTUAL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getGetActual());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -19229,9 +19446,15 @@ public final class TkrzwRpc {
 
         expectedValue_ = com.google.protobuf.ByteString.EMPTY;
 
+        expectAnyValue_ = false;
+
         desiredExistence_ = false;
 
         desiredValue_ = com.google.protobuf.ByteString.EMPTY;
+
+        desireNoUpdate_ = false;
+
+        getActual_ = false;
 
         return this;
       }
@@ -19263,8 +19486,11 @@ public final class TkrzwRpc {
         result.key_ = key_;
         result.expectedExistence_ = expectedExistence_;
         result.expectedValue_ = expectedValue_;
+        result.expectAnyValue_ = expectAnyValue_;
         result.desiredExistence_ = desiredExistence_;
         result.desiredValue_ = desiredValue_;
+        result.desireNoUpdate_ = desireNoUpdate_;
+        result.getActual_ = getActual_;
         onBuilt();
         return result;
       }
@@ -19325,11 +19551,20 @@ public final class TkrzwRpc {
         if (other.getExpectedValue() != com.google.protobuf.ByteString.EMPTY) {
           setExpectedValue(other.getExpectedValue());
         }
+        if (other.getExpectAnyValue() != false) {
+          setExpectAnyValue(other.getExpectAnyValue());
+        }
         if (other.getDesiredExistence() != false) {
           setDesiredExistence(other.getDesiredExistence());
         }
         if (other.getDesiredValue() != com.google.protobuf.ByteString.EMPTY) {
           setDesiredValue(other.getDesiredValue());
+        }
+        if (other.getDesireNoUpdate() != false) {
+          setDesireNoUpdate(other.getDesireNoUpdate());
+        }
+        if (other.getGetActual() != false) {
+          setGetActual(other.getGetActual());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -19538,13 +19773,56 @@ public final class TkrzwRpc {
         return this;
       }
 
+      private boolean expectAnyValue_ ;
+      /**
+       * <pre>
+       * True to expect any value.
+       * </pre>
+       *
+       * <code>bool expect_any_value = 5;</code>
+       * @return The expectAnyValue.
+       */
+      @java.lang.Override
+      public boolean getExpectAnyValue() {
+        return expectAnyValue_;
+      }
+      /**
+       * <pre>
+       * True to expect any value.
+       * </pre>
+       *
+       * <code>bool expect_any_value = 5;</code>
+       * @param value The expectAnyValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExpectAnyValue(boolean value) {
+
+        expectAnyValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * True to expect any value.
+       * </pre>
+       *
+       * <code>bool expect_any_value = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExpectAnyValue() {
+
+        expectAnyValue_ = false;
+        onChanged();
+        return this;
+      }
+
       private boolean desiredExistence_ ;
       /**
        * <pre>
        * Whether the record is desired to exists.
        * </pre>
        *
-       * <code>bool desired_existence = 5;</code>
+       * <code>bool desired_existence = 6;</code>
        * @return The desiredExistence.
        */
       @java.lang.Override
@@ -19556,7 +19834,7 @@ public final class TkrzwRpc {
        * Whether the record is desired to exists.
        * </pre>
        *
-       * <code>bool desired_existence = 5;</code>
+       * <code>bool desired_existence = 6;</code>
        * @param value The desiredExistence to set.
        * @return This builder for chaining.
        */
@@ -19571,7 +19849,7 @@ public final class TkrzwRpc {
        * Whether the record is desired to exists.
        * </pre>
        *
-       * <code>bool desired_existence = 5;</code>
+       * <code>bool desired_existence = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearDesiredExistence() {
@@ -19587,7 +19865,7 @@ public final class TkrzwRpc {
        * The desired value.
        * </pre>
        *
-       * <code>bytes desired_value = 6;</code>
+       * <code>bytes desired_value = 7;</code>
        * @return The desiredValue.
        */
       @java.lang.Override
@@ -19599,7 +19877,7 @@ public final class TkrzwRpc {
        * The desired value.
        * </pre>
        *
-       * <code>bytes desired_value = 6;</code>
+       * <code>bytes desired_value = 7;</code>
        * @param value The desiredValue to set.
        * @return This builder for chaining.
        */
@@ -19617,12 +19895,98 @@ public final class TkrzwRpc {
        * The desired value.
        * </pre>
        *
-       * <code>bytes desired_value = 6;</code>
+       * <code>bytes desired_value = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearDesiredValue() {
 
         desiredValue_ = getDefaultInstance().getDesiredValue();
+        onChanged();
+        return this;
+      }
+
+      private boolean desireNoUpdate_ ;
+      /**
+       * <pre>
+       * True to do no update.
+       * </pre>
+       *
+       * <code>bool desire_no_update = 8;</code>
+       * @return The desireNoUpdate.
+       */
+      @java.lang.Override
+      public boolean getDesireNoUpdate() {
+        return desireNoUpdate_;
+      }
+      /**
+       * <pre>
+       * True to do no update.
+       * </pre>
+       *
+       * <code>bool desire_no_update = 8;</code>
+       * @param value The desireNoUpdate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDesireNoUpdate(boolean value) {
+
+        desireNoUpdate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * True to do no update.
+       * </pre>
+       *
+       * <code>bool desire_no_update = 8;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDesireNoUpdate() {
+
+        desireNoUpdate_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean getActual_ ;
+      /**
+       * <pre>
+       * True to get the actual value of the existing record.
+       * </pre>
+       *
+       * <code>bool get_actual = 9;</code>
+       * @return The getActual.
+       */
+      @java.lang.Override
+      public boolean getGetActual() {
+        return getActual_;
+      }
+      /**
+       * <pre>
+       * True to get the actual value of the existing record.
+       * </pre>
+       *
+       * <code>bool get_actual = 9;</code>
+       * @param value The getActual to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGetActual(boolean value) {
+
+        getActual_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * True to get the actual value of the existing record.
+       * </pre>
+       *
+       * <code>bool get_actual = 9;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGetActual() {
+
+        getActual_ = false;
         onChanged();
         return this;
       }
@@ -19709,6 +20073,26 @@ public final class TkrzwRpc {
      * <code>.tkrzw_rpc.StatusProto status = 1;</code>
      */
     tkrzw_rpc.TkrzwRpc.StatusProtoOrBuilder getStatusOrBuilder();
+
+    /**
+     * <pre>
+     * The actual value of the existing record.
+     * </pre>
+     *
+     * <code>bytes actual = 2;</code>
+     * @return The actual.
+     */
+    com.google.protobuf.ByteString getActual();
+
+    /**
+     * <pre>
+     * Whether there is an existing record.
+     * </pre>
+     *
+     * <code>bool found = 3;</code>
+     * @return The found.
+     */
+    boolean getFound();
   }
   /**
    * <pre>
@@ -19727,6 +20111,7 @@ public final class TkrzwRpc {
       super(builder);
     }
     private CompareExchangeResponse() {
+      actual_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -19770,6 +20155,16 @@ public final class TkrzwRpc {
                 status_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 18: {
+
+              actual_ = input.readBytes();
+              break;
+            }
+            case 24: {
+
+              found_ = input.readBool();
               break;
             }
             default: {
@@ -19842,6 +20237,36 @@ public final class TkrzwRpc {
       return getStatus();
     }
 
+    public static final int ACTUAL_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString actual_;
+    /**
+     * <pre>
+     * The actual value of the existing record.
+     * </pre>
+     *
+     * <code>bytes actual = 2;</code>
+     * @return The actual.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getActual() {
+      return actual_;
+    }
+
+    public static final int FOUND_FIELD_NUMBER = 3;
+    private boolean found_;
+    /**
+     * <pre>
+     * Whether there is an existing record.
+     * </pre>
+     *
+     * <code>bool found = 3;</code>
+     * @return The found.
+     */
+    @java.lang.Override
+    public boolean getFound() {
+      return found_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -19859,6 +20284,12 @@ public final class TkrzwRpc {
       if (status_ != null) {
         output.writeMessage(1, getStatus());
       }
+      if (!actual_.isEmpty()) {
+        output.writeBytes(2, actual_);
+      }
+      if (found_ != false) {
+        output.writeBool(3, found_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -19871,6 +20302,14 @@ public final class TkrzwRpc {
       if (status_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getStatus());
+      }
+      if (!actual_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, actual_);
+      }
+      if (found_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, found_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -19892,6 +20331,10 @@ public final class TkrzwRpc {
         if (!getStatus()
             .equals(other.getStatus())) return false;
       }
+      if (!getActual()
+          .equals(other.getActual())) return false;
+      if (getFound()
+          != other.getFound()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -19907,6 +20350,11 @@ public final class TkrzwRpc {
         hash = (37 * hash) + STATUS_FIELD_NUMBER;
         hash = (53 * hash) + getStatus().hashCode();
       }
+      hash = (37 * hash) + ACTUAL_FIELD_NUMBER;
+      hash = (53 * hash) + getActual().hashCode();
+      hash = (37 * hash) + FOUND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFound());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -20050,6 +20498,10 @@ public final class TkrzwRpc {
           status_ = null;
           statusBuilder_ = null;
         }
+        actual_ = com.google.protobuf.ByteString.EMPTY;
+
+        found_ = false;
+
         return this;
       }
 
@@ -20081,6 +20533,8 @@ public final class TkrzwRpc {
         } else {
           result.status_ = statusBuilder_.build();
         }
+        result.actual_ = actual_;
+        result.found_ = found_;
         onBuilt();
         return result;
       }
@@ -20131,6 +20585,12 @@ public final class TkrzwRpc {
         if (other == tkrzw_rpc.TkrzwRpc.CompareExchangeResponse.getDefaultInstance()) return this;
         if (other.hasStatus()) {
           mergeStatus(other.getStatus());
+        }
+        if (other.getActual() != com.google.protobuf.ByteString.EMPTY) {
+          setActual(other.getActual());
+        }
+        if (other.getFound() != false) {
+          setFound(other.getFound());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -20314,6 +20774,95 @@ public final class TkrzwRpc {
           status_ = null;
         }
         return statusBuilder_;
+      }
+
+      private com.google.protobuf.ByteString actual_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * The actual value of the existing record.
+       * </pre>
+       *
+       * <code>bytes actual = 2;</code>
+       * @return The actual.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getActual() {
+        return actual_;
+      }
+      /**
+       * <pre>
+       * The actual value of the existing record.
+       * </pre>
+       *
+       * <code>bytes actual = 2;</code>
+       * @param value The actual to set.
+       * @return This builder for chaining.
+       */
+      public Builder setActual(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+
+        actual_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The actual value of the existing record.
+       * </pre>
+       *
+       * <code>bytes actual = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearActual() {
+
+        actual_ = getDefaultInstance().getActual();
+        onChanged();
+        return this;
+      }
+
+      private boolean found_ ;
+      /**
+       * <pre>
+       * Whether there is an existing record.
+       * </pre>
+       *
+       * <code>bool found = 3;</code>
+       * @return The found.
+       */
+      @java.lang.Override
+      public boolean getFound() {
+        return found_;
+      }
+      /**
+       * <pre>
+       * Whether there is an existing record.
+       * </pre>
+       *
+       * <code>bool found = 3;</code>
+       * @param value The found to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFound(boolean value) {
+
+        found_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Whether there is an existing record.
+       * </pre>
+       *
+       * <code>bool found = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFound() {
+
+        found_ = false;
+        onChanged();
+        return this;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -49649,184 +50198,187 @@ public final class TkrzwRpc {
       "oto\022\014\n\004code\030\001 \001(\005\022\017\n\007message\030\002 \001(\t\"+\n\nSt" +
       "ringPair\022\r\n\005first\030\001 \001(\t\022\016\n\006second\030\002 \001(\t\"" +
       "*\n\tBytesPair\022\r\n\005first\030\001 \001(\014\022\016\n\006second\030\002 " +
-      "\001(\014\"<\n\013RecordState\022\021\n\texistence\030\001 \001(\010\022\013\n" +
-      "\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\"\036\n\013EchoRequest" +
-      "\022\017\n\007message\030\001 \001(\t\"D\n\014EchoResponse\022&\n\006sta" +
-      "tus\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\014\n\004ech" +
-      "o\030\002 \001(\t\"#\n\016InspectRequest\022\021\n\tdbm_index\030\001" +
-      " \001(\005\"a\n\017InspectResponse\022&\n\006status\030\001 \001(\0132" +
-      "\026.tkrzw_rpc.StatusProto\022&\n\007records\030\002 \003(\013" +
-      "2\025.tkrzw_rpc.StringPair\"@\n\nGetRequest\022\021\n" +
-      "\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022\022\n\nomit_va" +
-      "lue\030\003 \001(\010\"D\n\013GetResponse\022&\n\006status\030\001 \001(\013" +
-      "2\026.tkrzw_rpc.StatusProto\022\r\n\005value\030\002 \001(\014\"" +
-      "2\n\017GetMultiRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n" +
-      "\004keys\030\002 \003(\014\"a\n\020GetMultiResponse\022&\n\006statu" +
-      "s\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022%\n\007recor" +
-      "ds\030\002 \003(\0132\024.tkrzw_rpc.BytesPair\"N\n\nSetReq" +
-      "uest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022\r\n\005" +
-      "value\030\003 \001(\014\022\021\n\toverwrite\030\004 \001(\010\"5\n\013SetRes" +
+      "\001(\014\"O\n\013RecordState\022\021\n\texistence\030\001 \001(\010\022\013\n" +
+      "\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\022\021\n\tany_value\030\004" +
+      " \001(\010\"\036\n\013EchoRequest\022\017\n\007message\030\001 \001(\t\"D\n\014" +
+      "EchoResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc" +
+      ".StatusProto\022\014\n\004echo\030\002 \001(\t\"#\n\016InspectReq" +
+      "uest\022\021\n\tdbm_index\030\001 \001(\005\"a\n\017InspectRespon" +
+      "se\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPro" +
+      "to\022&\n\007records\030\002 \003(\0132\025.tkrzw_rpc.StringPa" +
+      "ir\"@\n\nGetRequest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003k" +
+      "ey\030\002 \001(\014\022\022\n\nomit_value\030\003 \001(\010\"D\n\013GetRespo" +
+      "nse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPr" +
+      "oto\022\r\n\005value\030\002 \001(\014\"2\n\017GetMultiRequest\022\021\n" +
+      "\tdbm_index\030\001 \001(\005\022\014\n\004keys\030\002 \003(\014\"a\n\020GetMul" +
+      "tiResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.S" +
+      "tatusProto\022%\n\007records\030\002 \003(\0132\024.tkrzw_rpc." +
+      "BytesPair\"N\n\nSetRequest\022\021\n\tdbm_index\030\001 \001" +
+      "(\005\022\013\n\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\022\021\n\toverwr" +
+      "ite\030\004 \001(\010\"5\n\013SetResponse\022&\n\006status\030\001 \001(\013" +
+      "2\026.tkrzw_rpc.StatusProto\"^\n\017SetMultiRequ" +
+      "est\022\021\n\tdbm_index\030\001 \001(\005\022%\n\007records\030\002 \003(\0132" +
+      "\024.tkrzw_rpc.BytesPair\022\021\n\toverwrite\030\003 \001(\010" +
+      "\":\n\020SetMultiResponse\022&\n\006status\030\001 \001(\0132\026.t" +
+      "krzw_rpc.StatusProto\"/\n\rRemoveRequest\022\021\n" +
+      "\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\"8\n\016RemoveR" +
+      "esponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.Stat" +
+      "usProto\"5\n\022RemoveMultiRequest\022\021\n\tdbm_ind" +
+      "ex\030\001 \001(\005\022\014\n\004keys\030\002 \003(\014\"=\n\023RemoveMultiRes" +
       "ponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.Status" +
-      "Proto\"^\n\017SetMultiRequest\022\021\n\tdbm_index\030\001 " +
-      "\001(\005\022%\n\007records\030\002 \003(\0132\024.tkrzw_rpc.BytesPa" +
-      "ir\022\021\n\toverwrite\030\003 \001(\010\":\n\020SetMultiRespons" +
-      "e\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProt" +
-      "o\"/\n\rRemoveRequest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n" +
-      "\003key\030\002 \001(\014\"8\n\016RemoveResponse\022&\n\006status\030\001" +
-      " \001(\0132\026.tkrzw_rpc.StatusProto\"5\n\022RemoveMu" +
-      "ltiRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004keys\030\002 " +
-      "\003(\014\"=\n\023RemoveMultiResponse\022&\n\006status\030\001 \001" +
-      "(\0132\026.tkrzw_rpc.StatusProto\"M\n\rAppendRequ" +
-      "est\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022\r\n\005v" +
-      "alue\030\003 \001(\014\022\r\n\005delim\030\004 \001(\014\"8\n\016AppendRespo" +
+      "Proto\"M\n\rAppendRequest\022\021\n\tdbm_index\030\001 \001(" +
+      "\005\022\013\n\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\022\r\n\005delim\030\004" +
+      " \001(\014\"8\n\016AppendResponse\022&\n\006status\030\001 \001(\0132\026" +
+      ".tkrzw_rpc.StatusProto\"]\n\022AppendMultiReq" +
+      "uest\022\021\n\tdbm_index\030\001 \001(\005\022%\n\007records\030\002 \003(\013" +
+      "2\024.tkrzw_rpc.BytesPair\022\r\n\005delim\030\003 \001(\014\"=\n" +
+      "\023AppendMultiResponse\022&\n\006status\030\001 \001(\0132\026.t" +
+      "krzw_rpc.StatusProto\"\346\001\n\026CompareExchange" +
+      "Request\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022" +
+      "\032\n\022expected_existence\030\003 \001(\010\022\026\n\016expected_" +
+      "value\030\004 \001(\014\022\030\n\020expect_any_value\030\005 \001(\010\022\031\n" +
+      "\021desired_existence\030\006 \001(\010\022\025\n\rdesired_valu" +
+      "e\030\007 \001(\014\022\030\n\020desire_no_update\030\010 \001(\010\022\022\n\nget" +
+      "_actual\030\t \001(\010\"`\n\027CompareExchangeResponse" +
+      "\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto" +
+      "\022\016\n\006actual\030\002 \001(\014\022\r\n\005found\030\003 \001(\010\"V\n\020Incre" +
+      "mentRequest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 " +
+      "\001(\014\022\021\n\tincrement\030\003 \001(\003\022\017\n\007initial\030\004 \001(\003\"" +
+      "L\n\021IncrementResponse\022&\n\006status\030\001 \001(\0132\026.t" +
+      "krzw_rpc.StatusProto\022\017\n\007current\030\002 \001(\003\"\203\001" +
+      "\n\033CompareExchangeMultiRequest\022\021\n\tdbm_ind" +
+      "ex\030\001 \001(\005\022(\n\010expected\030\002 \003(\0132\026.tkrzw_rpc.R" +
+      "ecordState\022\'\n\007desired\030\003 \003(\0132\026.tkrzw_rpc." +
+      "RecordState\"F\n\034CompareExchangeMultiRespo" +
       "nse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPr" +
-      "oto\"]\n\022AppendMultiRequest\022\021\n\tdbm_index\030\001" +
-      " \001(\005\022%\n\007records\030\002 \003(\0132\024.tkrzw_rpc.BytesP" +
-      "air\022\r\n\005delim\030\003 \001(\014\"=\n\023AppendMultiRespons" +
+      "oto\"g\n\014RekeyRequest\022\021\n\tdbm_index\030\001 \001(\005\022\017" +
+      "\n\007old_key\030\002 \001(\014\022\017\n\007new_key\030\003 \001(\014\022\021\n\tover" +
+      "write\030\004 \001(\010\022\017\n\007copying\030\005 \001(\010\"7\n\rRekeyRes" +
+      "ponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.Status" +
+      "Proto\"^\n\017PopFirstRequest\022\021\n\tdbm_index\030\001 " +
+      "\001(\005\022\020\n\010omit_key\030\002 \001(\010\022\022\n\nomit_value\030\003 \001(" +
+      "\010\022\022\n\nretry_wait\030\004 \001(\001\"V\n\020PopFirstRespons" +
       "e\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProt" +
-      "o\"\236\001\n\026CompareExchangeRequest\022\021\n\tdbm_inde" +
-      "x\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022\032\n\022expected_existen" +
-      "ce\030\003 \001(\010\022\026\n\016expected_value\030\004 \001(\014\022\031\n\021desi" +
-      "red_existence\030\005 \001(\010\022\025\n\rdesired_value\030\006 \001" +
-      "(\014\"A\n\027CompareExchangeResponse\022&\n\006status\030" +
-      "\001 \001(\0132\026.tkrzw_rpc.StatusProto\"V\n\020Increme" +
-      "ntRequest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(" +
-      "\014\022\021\n\tincrement\030\003 \001(\003\022\017\n\007initial\030\004 \001(\003\"L\n" +
-      "\021IncrementResponse\022&\n\006status\030\001 \001(\0132\026.tkr" +
-      "zw_rpc.StatusProto\022\017\n\007current\030\002 \001(\003\"\203\001\n\033" +
-      "CompareExchangeMultiRequest\022\021\n\tdbm_index" +
-      "\030\001 \001(\005\022(\n\010expected\030\002 \003(\0132\026.tkrzw_rpc.Rec" +
-      "ordState\022\'\n\007desired\030\003 \003(\0132\026.tkrzw_rpc.Re" +
-      "cordState\"F\n\034CompareExchangeMultiRespons" +
-      "e\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProt" +
-      "o\"g\n\014RekeyRequest\022\021\n\tdbm_index\030\001 \001(\005\022\017\n\007" +
-      "old_key\030\002 \001(\014\022\017\n\007new_key\030\003 \001(\014\022\021\n\toverwr" +
-      "ite\030\004 \001(\010\022\017\n\007copying\030\005 \001(\010\"7\n\rRekeyRespo" +
+      "o\022\013\n\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\"R\n\017PushLas" +
+      "tRequest\022\021\n\tdbm_index\030\001 \001(\005\022\r\n\005value\030\002 \001" +
+      "(\014\022\r\n\005wtime\030\003 \001(\001\022\016\n\006notify\030\004 \001(\010\":\n\020Pus" +
+      "hLastResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rp" +
+      "c.StatusProto\"!\n\014CountRequest\022\021\n\tdbm_ind" +
+      "ex\030\001 \001(\005\"F\n\rCountResponse\022&\n\006status\030\001 \001(" +
+      "\0132\026.tkrzw_rpc.StatusProto\022\r\n\005count\030\002 \001(\003" +
+      "\"\'\n\022GetFileSizeRequest\022\021\n\tdbm_index\030\001 \001(" +
+      "\005\"P\n\023GetFileSizeResponse\022&\n\006status\030\001 \001(\013" +
+      "2\026.tkrzw_rpc.StatusProto\022\021\n\tfile_size\030\002 " +
+      "\001(\003\"!\n\014ClearRequest\022\021\n\tdbm_index\030\001 \001(\005\"7" +
+      "\n\rClearResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_" +
+      "rpc.StatusProto\"J\n\016RebuildRequest\022\021\n\tdbm" +
+      "_index\030\001 \001(\005\022%\n\006params\030\002 \003(\0132\025.tkrzw_rpc" +
+      ".StringPair\"9\n\017RebuildResponse\022&\n\006status" +
+      "\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"+\n\026Should" +
+      "BeRebuiltRequest\022\021\n\tdbm_index\030\001 \001(\005\"O\n\027S" +
+      "houldBeRebuiltResponse\022&\n\006status\030\001 \001(\0132\026" +
+      ".tkrzw_rpc.StatusProto\022\014\n\004tobe\030\002 \001(\010\"\\\n\022" +
+      "SynchronizeRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n" +
+      "\004hard\030\002 \001(\010\022%\n\006params\030\003 \003(\0132\025.tkrzw_rpc." +
+      "StringPair\"=\n\023SynchronizeResponse\022&\n\006sta" +
+      "tus\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"S\n\rSea" +
+      "rchRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004mode\030\002 " +
+      "\001(\t\022\017\n\007pattern\030\003 \001(\014\022\020\n\010capacity\030\004 \001(\005\"I" +
+      "\n\016SearchResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw" +
+      "_rpc.StatusProto\022\017\n\007matched\030\002 \003(\014\"\254\003\n\rSt" +
+      "reamRequest\022.\n\014echo_request\030\001 \001(\0132\026.tkrz" +
+      "w_rpc.EchoRequestH\000\022,\n\013get_request\030\002 \001(\013" +
+      "2\025.tkrzw_rpc.GetRequestH\000\022,\n\013set_request" +
+      "\030\003 \001(\0132\025.tkrzw_rpc.SetRequestH\000\0222\n\016remov" +
+      "e_request\030\004 \001(\0132\030.tkrzw_rpc.RemoveReques" +
+      "tH\000\0222\n\016append_request\030\005 \001(\0132\030.tkrzw_rpc." +
+      "AppendRequestH\000\022E\n\030compare_exchange_requ" +
+      "est\030\006 \001(\0132!.tkrzw_rpc.CompareExchangeReq" +
+      "uestH\000\0228\n\021increment_request\030\007 \001(\0132\033.tkrz" +
+      "w_rpc.IncrementRequestH\000\022\025\n\romit_respons" +
+      "e\030e \001(\010B\017\n\rrequest_oneof\"\245\003\n\016StreamRespo" +
+      "nse\0220\n\recho_response\030\001 \001(\0132\027.tkrzw_rpc.E" +
+      "choResponseH\000\022.\n\014get_response\030\002 \001(\0132\026.tk" +
+      "rzw_rpc.GetResponseH\000\022.\n\014set_response\030\003 " +
+      "\001(\0132\026.tkrzw_rpc.SetResponseH\000\0224\n\017remove_" +
+      "response\030\004 \001(\0132\031.tkrzw_rpc.RemoveRespons" +
+      "eH\000\0224\n\017append_response\030\005 \001(\0132\031.tkrzw_rpc" +
+      ".AppendResponseH\000\022G\n\031compare_exchange_re" +
+      "sponse\030\006 \001(\0132\".tkrzw_rpc.CompareExchange" +
+      "ResponseH\000\022:\n\022increment_response\030\007 \001(\0132\034" +
+      ".tkrzw_rpc.IncrementResponseH\000B\020\n\016respon" +
+      "se_oneof\"\352\002\n\016IterateRequest\022\021\n\tdbm_index" +
+      "\030\001 \001(\005\0223\n\toperation\030\002 \001(\0162 .tkrzw_rpc.It" +
+      "erateRequest.OpType\022\013\n\003key\030\003 \001(\014\022\r\n\005valu" +
+      "e\030\004 \001(\014\022\026\n\016jump_inclusive\030\005 \001(\010\022\020\n\010omit_" +
+      "key\030\006 \001(\010\022\022\n\nomit_value\030\007 \001(\010\"\265\001\n\006OpType" +
+      "\022\013\n\007OP_NONE\020\000\022\014\n\010OP_FIRST\020\001\022\013\n\007OP_LAST\020\002" +
+      "\022\013\n\007OP_JUMP\020\003\022\021\n\rOP_JUMP_LOWER\020\004\022\021\n\rOP_J" +
+      "UMP_UPPER\020\005\022\013\n\007OP_NEXT\020\006\022\017\n\013OP_PREVIOUS\020" +
+      "\007\022\n\n\006OP_GET\020\010\022\n\n\006OP_SET\020\t\022\r\n\tOP_REMOVE\020\n" +
+      "\022\013\n\007OP_STEP\020\013\"U\n\017IterateResponse\022&\n\006stat" +
+      "us\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\013\n\003key\030" +
+      "\002 \001(\014\022\r\n\005value\030\003 \001(\014\"O\n\020ReplicateRequest" +
+      "\022\025\n\rmin_timestamp\030\001 \001(\003\022\021\n\tserver_id\030\002 \001" +
+      "(\005\022\021\n\twait_time\030\003 \001(\001\"\206\002\n\021ReplicateRespo" +
       "nse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPr" +
-      "oto\"^\n\017PopFirstRequest\022\021\n\tdbm_index\030\001 \001(" +
-      "\005\022\020\n\010omit_key\030\002 \001(\010\022\022\n\nomit_value\030\003 \001(\010\022" +
-      "\022\n\nretry_wait\030\004 \001(\001\"V\n\020PopFirstResponse\022" +
-      "&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022" +
-      "\013\n\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\"R\n\017PushLastR" +
-      "equest\022\021\n\tdbm_index\030\001 \001(\005\022\r\n\005value\030\002 \001(\014" +
-      "\022\r\n\005wtime\030\003 \001(\001\022\016\n\006notify\030\004 \001(\010\":\n\020PushL" +
-      "astResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc." +
-      "StatusProto\"!\n\014CountRequest\022\021\n\tdbm_index" +
-      "\030\001 \001(\005\"F\n\rCountResponse\022&\n\006status\030\001 \001(\0132" +
-      "\026.tkrzw_rpc.StatusProto\022\r\n\005count\030\002 \001(\003\"\'" +
-      "\n\022GetFileSizeRequest\022\021\n\tdbm_index\030\001 \001(\005\"" +
-      "P\n\023GetFileSizeResponse\022&\n\006status\030\001 \001(\0132\026" +
-      ".tkrzw_rpc.StatusProto\022\021\n\tfile_size\030\002 \001(" +
-      "\003\"!\n\014ClearRequest\022\021\n\tdbm_index\030\001 \001(\005\"7\n\r" +
-      "ClearResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rp" +
-      "c.StatusProto\"J\n\016RebuildRequest\022\021\n\tdbm_i" +
-      "ndex\030\001 \001(\005\022%\n\006params\030\002 \003(\0132\025.tkrzw_rpc.S" +
-      "tringPair\"9\n\017RebuildResponse\022&\n\006status\030\001" +
-      " \001(\0132\026.tkrzw_rpc.StatusProto\"+\n\026ShouldBe" +
-      "RebuiltRequest\022\021\n\tdbm_index\030\001 \001(\005\"O\n\027Sho" +
-      "uldBeRebuiltResponse\022&\n\006status\030\001 \001(\0132\026.t" +
-      "krzw_rpc.StatusProto\022\014\n\004tobe\030\002 \001(\010\"\\\n\022Sy" +
-      "nchronizeRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004h" +
-      "ard\030\002 \001(\010\022%\n\006params\030\003 \003(\0132\025.tkrzw_rpc.St" +
-      "ringPair\"=\n\023SynchronizeResponse\022&\n\006statu" +
-      "s\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"S\n\rSearc" +
-      "hRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004mode\030\002 \001(" +
-      "\t\022\017\n\007pattern\030\003 \001(\014\022\020\n\010capacity\030\004 \001(\005\"I\n\016" +
-      "SearchResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_r" +
-      "pc.StatusProto\022\017\n\007matched\030\002 \003(\014\"\254\003\n\rStre" +
-      "amRequest\022.\n\014echo_request\030\001 \001(\0132\026.tkrzw_" +
-      "rpc.EchoRequestH\000\022,\n\013get_request\030\002 \001(\0132\025" +
-      ".tkrzw_rpc.GetRequestH\000\022,\n\013set_request\030\003" +
-      " \001(\0132\025.tkrzw_rpc.SetRequestH\000\0222\n\016remove_" +
-      "request\030\004 \001(\0132\030.tkrzw_rpc.RemoveRequestH" +
-      "\000\0222\n\016append_request\030\005 \001(\0132\030.tkrzw_rpc.Ap" +
-      "pendRequestH\000\022E\n\030compare_exchange_reques" +
-      "t\030\006 \001(\0132!.tkrzw_rpc.CompareExchangeReque" +
-      "stH\000\0228\n\021increment_request\030\007 \001(\0132\033.tkrzw_" +
-      "rpc.IncrementRequestH\000\022\025\n\romit_response\030" +
-      "e \001(\010B\017\n\rrequest_oneof\"\245\003\n\016StreamRespons" +
-      "e\0220\n\recho_response\030\001 \001(\0132\027.tkrzw_rpc.Ech" +
-      "oResponseH\000\022.\n\014get_response\030\002 \001(\0132\026.tkrz" +
-      "w_rpc.GetResponseH\000\022.\n\014set_response\030\003 \001(" +
-      "\0132\026.tkrzw_rpc.SetResponseH\000\0224\n\017remove_re" +
-      "sponse\030\004 \001(\0132\031.tkrzw_rpc.RemoveResponseH" +
-      "\000\0224\n\017append_response\030\005 \001(\0132\031.tkrzw_rpc.A" +
-      "ppendResponseH\000\022G\n\031compare_exchange_resp" +
-      "onse\030\006 \001(\0132\".tkrzw_rpc.CompareExchangeRe" +
-      "sponseH\000\022:\n\022increment_response\030\007 \001(\0132\034.t" +
-      "krzw_rpc.IncrementResponseH\000B\020\n\016response" +
-      "_oneof\"\352\002\n\016IterateRequest\022\021\n\tdbm_index\030\001" +
-      " \001(\005\0223\n\toperation\030\002 \001(\0162 .tkrzw_rpc.Iter" +
-      "ateRequest.OpType\022\013\n\003key\030\003 \001(\014\022\r\n\005value\030" +
-      "\004 \001(\014\022\026\n\016jump_inclusive\030\005 \001(\010\022\020\n\010omit_ke" +
-      "y\030\006 \001(\010\022\022\n\nomit_value\030\007 \001(\010\"\265\001\n\006OpType\022\013" +
-      "\n\007OP_NONE\020\000\022\014\n\010OP_FIRST\020\001\022\013\n\007OP_LAST\020\002\022\013" +
-      "\n\007OP_JUMP\020\003\022\021\n\rOP_JUMP_LOWER\020\004\022\021\n\rOP_JUM" +
-      "P_UPPER\020\005\022\013\n\007OP_NEXT\020\006\022\017\n\013OP_PREVIOUS\020\007\022" +
-      "\n\n\006OP_GET\020\010\022\n\n\006OP_SET\020\t\022\r\n\tOP_REMOVE\020\n\022\013" +
-      "\n\007OP_STEP\020\013\"U\n\017IterateResponse\022&\n\006status" +
-      "\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\013\n\003key\030\002 " +
-      "\001(\014\022\r\n\005value\030\003 \001(\014\"O\n\020ReplicateRequest\022\025" +
-      "\n\rmin_timestamp\030\001 \001(\003\022\021\n\tserver_id\030\002 \001(\005" +
-      "\022\021\n\twait_time\030\003 \001(\001\"\206\002\n\021ReplicateRespons" +
-      "e\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProt" +
-      "o\022\021\n\ttimestamp\030\002 \001(\003\022\021\n\tserver_id\030\003 \001(\005\022" +
-      "\021\n\tdbm_index\030\004 \001(\005\0224\n\007op_type\030\005 \001(\0162#.tk" +
-      "rzw_rpc.ReplicateResponse.OpType\022\013\n\003key\030" +
-      "\006 \001(\014\022\r\n\005value\030\007 \001(\014\">\n\006OpType\022\013\n\007OP_NOO" +
-      "P\020\000\022\n\n\006OP_SET\020\001\022\r\n\tOP_REMOVE\020\002\022\014\n\010OP_CLE" +
-      "AR\020\003\"=\n\023ChangeMasterRequest\022\016\n\006master\030\001 " +
-      "\001(\t\022\026\n\016timestamp_skew\030\002 \001(\003\">\n\024ChangeMas" +
-      "terResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc." +
-      "StatusProto2\373\016\n\nDBMService\0227\n\004Echo\022\026.tkr" +
-      "zw_rpc.EchoRequest\032\027.tkrzw_rpc.EchoRespo" +
-      "nse\022@\n\007Inspect\022\031.tkrzw_rpc.InspectReques" +
-      "t\032\032.tkrzw_rpc.InspectResponse\0224\n\003Get\022\025.t" +
-      "krzw_rpc.GetRequest\032\026.tkrzw_rpc.GetRespo" +
-      "nse\022C\n\010GetMulti\022\032.tkrzw_rpc.GetMultiRequ" +
-      "est\032\033.tkrzw_rpc.GetMultiResponse\0224\n\003Set\022" +
-      "\025.tkrzw_rpc.SetRequest\032\026.tkrzw_rpc.SetRe" +
-      "sponse\022C\n\010SetMulti\022\032.tkrzw_rpc.SetMultiR" +
-      "equest\032\033.tkrzw_rpc.SetMultiResponse\022=\n\006R" +
-      "emove\022\030.tkrzw_rpc.RemoveRequest\032\031.tkrzw_" +
-      "rpc.RemoveResponse\022L\n\013RemoveMulti\022\035.tkrz" +
-      "w_rpc.RemoveMultiRequest\032\036.tkrzw_rpc.Rem" +
-      "oveMultiResponse\022=\n\006Append\022\030.tkrzw_rpc.A" +
-      "ppendRequest\032\031.tkrzw_rpc.AppendResponse\022" +
-      "L\n\013AppendMulti\022\035.tkrzw_rpc.AppendMultiRe" +
-      "quest\032\036.tkrzw_rpc.AppendMultiResponse\022X\n" +
-      "\017CompareExchange\022!.tkrzw_rpc.CompareExch" +
-      "angeRequest\032\".tkrzw_rpc.CompareExchangeR" +
-      "esponse\022F\n\tIncrement\022\033.tkrzw_rpc.Increme" +
-      "ntRequest\032\034.tkrzw_rpc.IncrementResponse\022" +
-      "g\n\024CompareExchangeMulti\022&.tkrzw_rpc.Comp" +
-      "areExchangeMultiRequest\032\'.tkrzw_rpc.Comp" +
-      "areExchangeMultiResponse\022:\n\005Rekey\022\027.tkrz" +
-      "w_rpc.RekeyRequest\032\030.tkrzw_rpc.RekeyResp" +
-      "onse\022C\n\010PopFirst\022\032.tkrzw_rpc.PopFirstReq" +
-      "uest\032\033.tkrzw_rpc.PopFirstResponse\022C\n\010Pus" +
-      "hLast\022\032.tkrzw_rpc.PushLastRequest\032\033.tkrz" +
-      "w_rpc.PushLastResponse\022:\n\005Count\022\027.tkrzw_" +
-      "rpc.CountRequest\032\030.tkrzw_rpc.CountRespon" +
-      "se\022L\n\013GetFileSize\022\035.tkrzw_rpc.GetFileSiz" +
-      "eRequest\032\036.tkrzw_rpc.GetFileSizeResponse" +
-      "\022:\n\005Clear\022\027.tkrzw_rpc.ClearRequest\032\030.tkr" +
-      "zw_rpc.ClearResponse\022@\n\007Rebuild\022\031.tkrzw_" +
-      "rpc.RebuildRequest\032\032.tkrzw_rpc.RebuildRe" +
-      "sponse\022X\n\017ShouldBeRebuilt\022!.tkrzw_rpc.Sh" +
-      "ouldBeRebuiltRequest\032\".tkrzw_rpc.ShouldB" +
-      "eRebuiltResponse\022L\n\013Synchronize\022\035.tkrzw_" +
-      "rpc.SynchronizeRequest\032\036.tkrzw_rpc.Synch" +
-      "ronizeResponse\022=\n\006Search\022\030.tkrzw_rpc.Sea" +
-      "rchRequest\032\031.tkrzw_rpc.SearchResponse\022A\n" +
-      "\006Stream\022\030.tkrzw_rpc.StreamRequest\032\031.tkrz" +
-      "w_rpc.StreamResponse(\0010\001\022D\n\007Iterate\022\031.tk" +
-      "rzw_rpc.IterateRequest\032\032.tkrzw_rpc.Itera" +
-      "teResponse(\0010\001\022H\n\tReplicate\022\033.tkrzw_rpc." +
-      "ReplicateRequest\032\034.tkrzw_rpc.ReplicateRe" +
-      "sponse0\001\022O\n\014ChangeMaster\022\036.tkrzw_rpc.Cha" +
-      "ngeMasterRequest\032\037.tkrzw_rpc.ChangeMaste" +
-      "rResponseb\006proto3"
+      "oto\022\021\n\ttimestamp\030\002 \001(\003\022\021\n\tserver_id\030\003 \001(" +
+      "\005\022\021\n\tdbm_index\030\004 \001(\005\0224\n\007op_type\030\005 \001(\0162#." +
+      "tkrzw_rpc.ReplicateResponse.OpType\022\013\n\003ke" +
+      "y\030\006 \001(\014\022\r\n\005value\030\007 \001(\014\">\n\006OpType\022\013\n\007OP_N" +
+      "OOP\020\000\022\n\n\006OP_SET\020\001\022\r\n\tOP_REMOVE\020\002\022\014\n\010OP_C" +
+      "LEAR\020\003\"=\n\023ChangeMasterRequest\022\016\n\006master\030" +
+      "\001 \001(\t\022\026\n\016timestamp_skew\030\002 \001(\003\">\n\024ChangeM" +
+      "asterResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rp" +
+      "c.StatusProto2\373\016\n\nDBMService\0227\n\004Echo\022\026.t" +
+      "krzw_rpc.EchoRequest\032\027.tkrzw_rpc.EchoRes" +
+      "ponse\022@\n\007Inspect\022\031.tkrzw_rpc.InspectRequ" +
+      "est\032\032.tkrzw_rpc.InspectResponse\0224\n\003Get\022\025" +
+      ".tkrzw_rpc.GetRequest\032\026.tkrzw_rpc.GetRes" +
+      "ponse\022C\n\010GetMulti\022\032.tkrzw_rpc.GetMultiRe" +
+      "quest\032\033.tkrzw_rpc.GetMultiResponse\0224\n\003Se" +
+      "t\022\025.tkrzw_rpc.SetRequest\032\026.tkrzw_rpc.Set" +
+      "Response\022C\n\010SetMulti\022\032.tkrzw_rpc.SetMult" +
+      "iRequest\032\033.tkrzw_rpc.SetMultiResponse\022=\n" +
+      "\006Remove\022\030.tkrzw_rpc.RemoveRequest\032\031.tkrz" +
+      "w_rpc.RemoveResponse\022L\n\013RemoveMulti\022\035.tk" +
+      "rzw_rpc.RemoveMultiRequest\032\036.tkrzw_rpc.R" +
+      "emoveMultiResponse\022=\n\006Append\022\030.tkrzw_rpc" +
+      ".AppendRequest\032\031.tkrzw_rpc.AppendRespons" +
+      "e\022L\n\013AppendMulti\022\035.tkrzw_rpc.AppendMulti" +
+      "Request\032\036.tkrzw_rpc.AppendMultiResponse\022" +
+      "X\n\017CompareExchange\022!.tkrzw_rpc.CompareEx" +
+      "changeRequest\032\".tkrzw_rpc.CompareExchang" +
+      "eResponse\022F\n\tIncrement\022\033.tkrzw_rpc.Incre" +
+      "mentRequest\032\034.tkrzw_rpc.IncrementRespons" +
+      "e\022g\n\024CompareExchangeMulti\022&.tkrzw_rpc.Co" +
+      "mpareExchangeMultiRequest\032\'.tkrzw_rpc.Co" +
+      "mpareExchangeMultiResponse\022:\n\005Rekey\022\027.tk" +
+      "rzw_rpc.RekeyRequest\032\030.tkrzw_rpc.RekeyRe" +
+      "sponse\022C\n\010PopFirst\022\032.tkrzw_rpc.PopFirstR" +
+      "equest\032\033.tkrzw_rpc.PopFirstResponse\022C\n\010P" +
+      "ushLast\022\032.tkrzw_rpc.PushLastRequest\032\033.tk" +
+      "rzw_rpc.PushLastResponse\022:\n\005Count\022\027.tkrz" +
+      "w_rpc.CountRequest\032\030.tkrzw_rpc.CountResp" +
+      "onse\022L\n\013GetFileSize\022\035.tkrzw_rpc.GetFileS" +
+      "izeRequest\032\036.tkrzw_rpc.GetFileSizeRespon" +
+      "se\022:\n\005Clear\022\027.tkrzw_rpc.ClearRequest\032\030.t" +
+      "krzw_rpc.ClearResponse\022@\n\007Rebuild\022\031.tkrz" +
+      "w_rpc.RebuildRequest\032\032.tkrzw_rpc.Rebuild" +
+      "Response\022X\n\017ShouldBeRebuilt\022!.tkrzw_rpc." +
+      "ShouldBeRebuiltRequest\032\".tkrzw_rpc.Shoul" +
+      "dBeRebuiltResponse\022L\n\013Synchronize\022\035.tkrz" +
+      "w_rpc.SynchronizeRequest\032\036.tkrzw_rpc.Syn" +
+      "chronizeResponse\022=\n\006Search\022\030.tkrzw_rpc.S" +
+      "earchRequest\032\031.tkrzw_rpc.SearchResponse\022" +
+      "A\n\006Stream\022\030.tkrzw_rpc.StreamRequest\032\031.tk" +
+      "rzw_rpc.StreamResponse(\0010\001\022D\n\007Iterate\022\031." +
+      "tkrzw_rpc.IterateRequest\032\032.tkrzw_rpc.Ite" +
+      "rateResponse(\0010\001\022H\n\tReplicate\022\033.tkrzw_rp" +
+      "c.ReplicateRequest\032\034.tkrzw_rpc.Replicate" +
+      "Response0\001\022O\n\014ChangeMaster\022\036.tkrzw_rpc.C" +
+      "hangeMasterRequest\032\037.tkrzw_rpc.ChangeMas" +
+      "terResponseb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -49855,7 +50407,7 @@ public final class TkrzwRpc {
     internal_static_tkrzw_rpc_RecordState_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tkrzw_rpc_RecordState_descriptor,
-        new java.lang.String[] { "Existence", "Key", "Value", });
+        new java.lang.String[] { "Existence", "Key", "Value", "AnyValue", });
     internal_static_tkrzw_rpc_EchoRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_tkrzw_rpc_EchoRequest_fieldAccessorTable = new
@@ -49981,13 +50533,13 @@ public final class TkrzwRpc {
     internal_static_tkrzw_rpc_CompareExchangeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tkrzw_rpc_CompareExchangeRequest_descriptor,
-        new java.lang.String[] { "DbmIndex", "Key", "ExpectedExistence", "ExpectedValue", "DesiredExistence", "DesiredValue", });
+        new java.lang.String[] { "DbmIndex", "Key", "ExpectedExistence", "ExpectedValue", "ExpectAnyValue", "DesiredExistence", "DesiredValue", "DesireNoUpdate", "GetActual", });
     internal_static_tkrzw_rpc_CompareExchangeResponse_descriptor =
       getDescriptor().getMessageTypes().get(25);
     internal_static_tkrzw_rpc_CompareExchangeResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tkrzw_rpc_CompareExchangeResponse_descriptor,
-        new java.lang.String[] { "Status", });
+        new java.lang.String[] { "Status", "Actual", "Found", });
     internal_static_tkrzw_rpc_IncrementRequest_descriptor =
       getDescriptor().getMessageTypes().get(26);
     internal_static_tkrzw_rpc_IncrementRequest_fieldAccessorTable = new

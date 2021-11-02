@@ -94,7 +94,7 @@ apidoc :
 apidocclean :
 	rm -rf api-doc api-doc-tmp
 
-pbjava : tkrzw_rpc.proto
+protocode : tkrzw_rpc.proto
 	rm -rf tkrzw_rpc
 	$(PROTOC) --plugin=protoc-gen-grpc_java=$(GRPCJAVAPLUGIN) \
 	  --proto_path=. --java_out=. --grpc_java_out=. tkrzw_rpc.proto
@@ -104,7 +104,7 @@ pbjava : tkrzw_rpc.proto
 	  DBMServiceGrpc.java > ~DBMServiceGrpc.java
 	mv -f ~DBMServiceGrpc.java DBMServiceGrpc.java
 
-.PHONY : all clean install casket check apidoc apidocclean
+.PHONY : all clean install casket check apidoc apidocclean protocode
 
 tkrzw_rpc.jar : $(JAVAFILES)
 	$(JAVAC) $(JAVACFLAGS) $(JAVAFILES)
