@@ -18883,6 +18883,26 @@ public final class TkrzwRpc {
      * @return The getActual.
      */
     boolean getGetActual();
+
+    /**
+     * <pre>
+     * The wait time in seconds before retrying.
+     * </pre>
+     *
+     * <code>double retry_wait = 10;</code>
+     * @return The retryWait.
+     */
+    double getRetryWait();
+
+    /**
+     * <pre>
+     * True to send a signal to wake up retrying threads.
+     * </pre>
+     *
+     * <code>bool notify = 11;</code>
+     * @return The notify.
+     */
+    boolean getNotify();
   }
   /**
    * <pre>
@@ -18979,6 +18999,16 @@ public final class TkrzwRpc {
             case 72: {
 
               getActual_ = input.readBool();
+              break;
+            }
+            case 81: {
+
+              retryWait_ = input.readDouble();
+              break;
+            }
+            case 88: {
+
+              notify_ = input.readBool();
               break;
             }
             default: {
@@ -19148,6 +19178,36 @@ public final class TkrzwRpc {
       return getActual_;
     }
 
+    public static final int RETRY_WAIT_FIELD_NUMBER = 10;
+    private double retryWait_;
+    /**
+     * <pre>
+     * The wait time in seconds before retrying.
+     * </pre>
+     *
+     * <code>double retry_wait = 10;</code>
+     * @return The retryWait.
+     */
+    @java.lang.Override
+    public double getRetryWait() {
+      return retryWait_;
+    }
+
+    public static final int NOTIFY_FIELD_NUMBER = 11;
+    private boolean notify_;
+    /**
+     * <pre>
+     * True to send a signal to wake up retrying threads.
+     * </pre>
+     *
+     * <code>bool notify = 11;</code>
+     * @return The notify.
+     */
+    @java.lang.Override
+    public boolean getNotify() {
+      return notify_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -19188,6 +19248,12 @@ public final class TkrzwRpc {
       }
       if (getActual_ != false) {
         output.writeBool(9, getActual_);
+      }
+      if (retryWait_ != 0D) {
+        output.writeDouble(10, retryWait_);
+      }
+      if (notify_ != false) {
+        output.writeBool(11, notify_);
       }
       unknownFields.writeTo(output);
     }
@@ -19234,6 +19300,14 @@ public final class TkrzwRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(9, getActual_);
       }
+      if (retryWait_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(10, retryWait_);
+      }
+      if (notify_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, notify_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -19267,6 +19341,11 @@ public final class TkrzwRpc {
           != other.getDesireNoUpdate()) return false;
       if (getGetActual()
           != other.getGetActual()) return false;
+      if (java.lang.Double.doubleToLongBits(getRetryWait())
+          != java.lang.Double.doubleToLongBits(
+              other.getRetryWait())) return false;
+      if (getNotify()
+          != other.getNotify()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -19301,6 +19380,12 @@ public final class TkrzwRpc {
       hash = (37 * hash) + GET_ACTUAL_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getGetActual());
+      hash = (37 * hash) + RETRY_WAIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getRetryWait()));
+      hash = (37 * hash) + NOTIFY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getNotify());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -19456,6 +19541,10 @@ public final class TkrzwRpc {
 
         getActual_ = false;
 
+        retryWait_ = 0D;
+
+        notify_ = false;
+
         return this;
       }
 
@@ -19491,6 +19580,8 @@ public final class TkrzwRpc {
         result.desiredValue_ = desiredValue_;
         result.desireNoUpdate_ = desireNoUpdate_;
         result.getActual_ = getActual_;
+        result.retryWait_ = retryWait_;
+        result.notify_ = notify_;
         onBuilt();
         return result;
       }
@@ -19565,6 +19656,12 @@ public final class TkrzwRpc {
         }
         if (other.getGetActual() != false) {
           setGetActual(other.getGetActual());
+        }
+        if (other.getRetryWait() != 0D) {
+          setRetryWait(other.getRetryWait());
+        }
+        if (other.getNotify() != false) {
+          setNotify(other.getNotify());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -19987,6 +20084,92 @@ public final class TkrzwRpc {
       public Builder clearGetActual() {
 
         getActual_ = false;
+        onChanged();
+        return this;
+      }
+
+      private double retryWait_ ;
+      /**
+       * <pre>
+       * The wait time in seconds before retrying.
+       * </pre>
+       *
+       * <code>double retry_wait = 10;</code>
+       * @return The retryWait.
+       */
+      @java.lang.Override
+      public double getRetryWait() {
+        return retryWait_;
+      }
+      /**
+       * <pre>
+       * The wait time in seconds before retrying.
+       * </pre>
+       *
+       * <code>double retry_wait = 10;</code>
+       * @param value The retryWait to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetryWait(double value) {
+
+        retryWait_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The wait time in seconds before retrying.
+       * </pre>
+       *
+       * <code>double retry_wait = 10;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetryWait() {
+
+        retryWait_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private boolean notify_ ;
+      /**
+       * <pre>
+       * True to send a signal to wake up retrying threads.
+       * </pre>
+       *
+       * <code>bool notify = 11;</code>
+       * @return The notify.
+       */
+      @java.lang.Override
+      public boolean getNotify() {
+        return notify_;
+      }
+      /**
+       * <pre>
+       * True to send a signal to wake up retrying threads.
+       * </pre>
+       *
+       * <code>bool notify = 11;</code>
+       * @param value The notify to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNotify(boolean value) {
+
+        notify_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * True to send a signal to wake up retrying threads.
+       * </pre>
+       *
+       * <code>bool notify = 11;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNotify() {
+
+        notify_ = false;
         onChanged();
         return this;
       }
@@ -50233,152 +50416,153 @@ public final class TkrzwRpc {
       "uest\022\021\n\tdbm_index\030\001 \001(\005\022%\n\007records\030\002 \003(\013" +
       "2\024.tkrzw_rpc.BytesPair\022\r\n\005delim\030\003 \001(\014\"=\n" +
       "\023AppendMultiResponse\022&\n\006status\030\001 \001(\0132\026.t" +
-      "krzw_rpc.StatusProto\"\346\001\n\026CompareExchange" +
+      "krzw_rpc.StatusProto\"\212\002\n\026CompareExchange" +
       "Request\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022" +
       "\032\n\022expected_existence\030\003 \001(\010\022\026\n\016expected_" +
       "value\030\004 \001(\014\022\030\n\020expect_any_value\030\005 \001(\010\022\031\n" +
       "\021desired_existence\030\006 \001(\010\022\025\n\rdesired_valu" +
       "e\030\007 \001(\014\022\030\n\020desire_no_update\030\010 \001(\010\022\022\n\nget" +
-      "_actual\030\t \001(\010\"`\n\027CompareExchangeResponse" +
-      "\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto" +
-      "\022\016\n\006actual\030\002 \001(\014\022\r\n\005found\030\003 \001(\010\"V\n\020Incre" +
-      "mentRequest\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 " +
-      "\001(\014\022\021\n\tincrement\030\003 \001(\003\022\017\n\007initial\030\004 \001(\003\"" +
-      "L\n\021IncrementResponse\022&\n\006status\030\001 \001(\0132\026.t" +
-      "krzw_rpc.StatusProto\022\017\n\007current\030\002 \001(\003\"\203\001" +
-      "\n\033CompareExchangeMultiRequest\022\021\n\tdbm_ind" +
-      "ex\030\001 \001(\005\022(\n\010expected\030\002 \003(\0132\026.tkrzw_rpc.R" +
-      "ecordState\022\'\n\007desired\030\003 \003(\0132\026.tkrzw_rpc." +
-      "RecordState\"F\n\034CompareExchangeMultiRespo" +
-      "nse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPr" +
-      "oto\"g\n\014RekeyRequest\022\021\n\tdbm_index\030\001 \001(\005\022\017" +
-      "\n\007old_key\030\002 \001(\014\022\017\n\007new_key\030\003 \001(\014\022\021\n\tover" +
-      "write\030\004 \001(\010\022\017\n\007copying\030\005 \001(\010\"7\n\rRekeyRes" +
-      "ponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.Status" +
-      "Proto\"^\n\017PopFirstRequest\022\021\n\tdbm_index\030\001 " +
-      "\001(\005\022\020\n\010omit_key\030\002 \001(\010\022\022\n\nomit_value\030\003 \001(" +
-      "\010\022\022\n\nretry_wait\030\004 \001(\001\"V\n\020PopFirstRespons" +
+      "_actual\030\t \001(\010\022\022\n\nretry_wait\030\n \001(\001\022\016\n\006not" +
+      "ify\030\013 \001(\010\"`\n\027CompareExchangeResponse\022&\n\006" +
+      "status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\016\n\006" +
+      "actual\030\002 \001(\014\022\r\n\005found\030\003 \001(\010\"V\n\020Increment" +
+      "Request\022\021\n\tdbm_index\030\001 \001(\005\022\013\n\003key\030\002 \001(\014\022" +
+      "\021\n\tincrement\030\003 \001(\003\022\017\n\007initial\030\004 \001(\003\"L\n\021I" +
+      "ncrementResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw" +
+      "_rpc.StatusProto\022\017\n\007current\030\002 \001(\003\"\203\001\n\033Co" +
+      "mpareExchangeMultiRequest\022\021\n\tdbm_index\030\001" +
+      " \001(\005\022(\n\010expected\030\002 \003(\0132\026.tkrzw_rpc.Recor" +
+      "dState\022\'\n\007desired\030\003 \003(\0132\026.tkrzw_rpc.Reco" +
+      "rdState\"F\n\034CompareExchangeMultiResponse\022" +
+      "&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"" +
+      "g\n\014RekeyRequest\022\021\n\tdbm_index\030\001 \001(\005\022\017\n\007ol" +
+      "d_key\030\002 \001(\014\022\017\n\007new_key\030\003 \001(\014\022\021\n\toverwrit" +
+      "e\030\004 \001(\010\022\017\n\007copying\030\005 \001(\010\"7\n\rRekeyRespons" +
       "e\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProt" +
-      "o\022\013\n\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\"R\n\017PushLas" +
-      "tRequest\022\021\n\tdbm_index\030\001 \001(\005\022\r\n\005value\030\002 \001" +
-      "(\014\022\r\n\005wtime\030\003 \001(\001\022\016\n\006notify\030\004 \001(\010\":\n\020Pus" +
-      "hLastResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rp" +
-      "c.StatusProto\"!\n\014CountRequest\022\021\n\tdbm_ind" +
-      "ex\030\001 \001(\005\"F\n\rCountResponse\022&\n\006status\030\001 \001(" +
-      "\0132\026.tkrzw_rpc.StatusProto\022\r\n\005count\030\002 \001(\003" +
-      "\"\'\n\022GetFileSizeRequest\022\021\n\tdbm_index\030\001 \001(" +
-      "\005\"P\n\023GetFileSizeResponse\022&\n\006status\030\001 \001(\013" +
-      "2\026.tkrzw_rpc.StatusProto\022\021\n\tfile_size\030\002 " +
-      "\001(\003\"!\n\014ClearRequest\022\021\n\tdbm_index\030\001 \001(\005\"7" +
-      "\n\rClearResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_" +
-      "rpc.StatusProto\"J\n\016RebuildRequest\022\021\n\tdbm" +
-      "_index\030\001 \001(\005\022%\n\006params\030\002 \003(\0132\025.tkrzw_rpc" +
-      ".StringPair\"9\n\017RebuildResponse\022&\n\006status" +
-      "\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"+\n\026Should" +
-      "BeRebuiltRequest\022\021\n\tdbm_index\030\001 \001(\005\"O\n\027S" +
-      "houldBeRebuiltResponse\022&\n\006status\030\001 \001(\0132\026" +
-      ".tkrzw_rpc.StatusProto\022\014\n\004tobe\030\002 \001(\010\"\\\n\022" +
-      "SynchronizeRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n" +
-      "\004hard\030\002 \001(\010\022%\n\006params\030\003 \003(\0132\025.tkrzw_rpc." +
-      "StringPair\"=\n\023SynchronizeResponse\022&\n\006sta" +
-      "tus\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\"S\n\rSea" +
-      "rchRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004mode\030\002 " +
-      "\001(\t\022\017\n\007pattern\030\003 \001(\014\022\020\n\010capacity\030\004 \001(\005\"I" +
-      "\n\016SearchResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw" +
-      "_rpc.StatusProto\022\017\n\007matched\030\002 \003(\014\"\254\003\n\rSt" +
-      "reamRequest\022.\n\014echo_request\030\001 \001(\0132\026.tkrz" +
-      "w_rpc.EchoRequestH\000\022,\n\013get_request\030\002 \001(\013" +
-      "2\025.tkrzw_rpc.GetRequestH\000\022,\n\013set_request" +
-      "\030\003 \001(\0132\025.tkrzw_rpc.SetRequestH\000\0222\n\016remov" +
-      "e_request\030\004 \001(\0132\030.tkrzw_rpc.RemoveReques" +
-      "tH\000\0222\n\016append_request\030\005 \001(\0132\030.tkrzw_rpc." +
-      "AppendRequestH\000\022E\n\030compare_exchange_requ" +
-      "est\030\006 \001(\0132!.tkrzw_rpc.CompareExchangeReq" +
-      "uestH\000\0228\n\021increment_request\030\007 \001(\0132\033.tkrz" +
-      "w_rpc.IncrementRequestH\000\022\025\n\romit_respons" +
-      "e\030e \001(\010B\017\n\rrequest_oneof\"\245\003\n\016StreamRespo" +
-      "nse\0220\n\recho_response\030\001 \001(\0132\027.tkrzw_rpc.E" +
-      "choResponseH\000\022.\n\014get_response\030\002 \001(\0132\026.tk" +
-      "rzw_rpc.GetResponseH\000\022.\n\014set_response\030\003 " +
-      "\001(\0132\026.tkrzw_rpc.SetResponseH\000\0224\n\017remove_" +
-      "response\030\004 \001(\0132\031.tkrzw_rpc.RemoveRespons" +
-      "eH\000\0224\n\017append_response\030\005 \001(\0132\031.tkrzw_rpc" +
-      ".AppendResponseH\000\022G\n\031compare_exchange_re" +
-      "sponse\030\006 \001(\0132\".tkrzw_rpc.CompareExchange" +
-      "ResponseH\000\022:\n\022increment_response\030\007 \001(\0132\034" +
-      ".tkrzw_rpc.IncrementResponseH\000B\020\n\016respon" +
-      "se_oneof\"\352\002\n\016IterateRequest\022\021\n\tdbm_index" +
-      "\030\001 \001(\005\0223\n\toperation\030\002 \001(\0162 .tkrzw_rpc.It" +
-      "erateRequest.OpType\022\013\n\003key\030\003 \001(\014\022\r\n\005valu" +
-      "e\030\004 \001(\014\022\026\n\016jump_inclusive\030\005 \001(\010\022\020\n\010omit_" +
-      "key\030\006 \001(\010\022\022\n\nomit_value\030\007 \001(\010\"\265\001\n\006OpType" +
-      "\022\013\n\007OP_NONE\020\000\022\014\n\010OP_FIRST\020\001\022\013\n\007OP_LAST\020\002" +
-      "\022\013\n\007OP_JUMP\020\003\022\021\n\rOP_JUMP_LOWER\020\004\022\021\n\rOP_J" +
-      "UMP_UPPER\020\005\022\013\n\007OP_NEXT\020\006\022\017\n\013OP_PREVIOUS\020" +
-      "\007\022\n\n\006OP_GET\020\010\022\n\n\006OP_SET\020\t\022\r\n\tOP_REMOVE\020\n" +
-      "\022\013\n\007OP_STEP\020\013\"U\n\017IterateResponse\022&\n\006stat" +
-      "us\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\013\n\003key\030" +
-      "\002 \001(\014\022\r\n\005value\030\003 \001(\014\"O\n\020ReplicateRequest" +
-      "\022\025\n\rmin_timestamp\030\001 \001(\003\022\021\n\tserver_id\030\002 \001" +
-      "(\005\022\021\n\twait_time\030\003 \001(\001\"\206\002\n\021ReplicateRespo" +
-      "nse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusPr" +
-      "oto\022\021\n\ttimestamp\030\002 \001(\003\022\021\n\tserver_id\030\003 \001(" +
-      "\005\022\021\n\tdbm_index\030\004 \001(\005\0224\n\007op_type\030\005 \001(\0162#." +
-      "tkrzw_rpc.ReplicateResponse.OpType\022\013\n\003ke" +
-      "y\030\006 \001(\014\022\r\n\005value\030\007 \001(\014\">\n\006OpType\022\013\n\007OP_N" +
-      "OOP\020\000\022\n\n\006OP_SET\020\001\022\r\n\tOP_REMOVE\020\002\022\014\n\010OP_C" +
-      "LEAR\020\003\"=\n\023ChangeMasterRequest\022\016\n\006master\030" +
-      "\001 \001(\t\022\026\n\016timestamp_skew\030\002 \001(\003\">\n\024ChangeM" +
-      "asterResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rp" +
-      "c.StatusProto2\373\016\n\nDBMService\0227\n\004Echo\022\026.t" +
-      "krzw_rpc.EchoRequest\032\027.tkrzw_rpc.EchoRes" +
-      "ponse\022@\n\007Inspect\022\031.tkrzw_rpc.InspectRequ" +
-      "est\032\032.tkrzw_rpc.InspectResponse\0224\n\003Get\022\025" +
-      ".tkrzw_rpc.GetRequest\032\026.tkrzw_rpc.GetRes" +
-      "ponse\022C\n\010GetMulti\022\032.tkrzw_rpc.GetMultiRe" +
-      "quest\032\033.tkrzw_rpc.GetMultiResponse\0224\n\003Se" +
-      "t\022\025.tkrzw_rpc.SetRequest\032\026.tkrzw_rpc.Set" +
-      "Response\022C\n\010SetMulti\022\032.tkrzw_rpc.SetMult" +
-      "iRequest\032\033.tkrzw_rpc.SetMultiResponse\022=\n" +
-      "\006Remove\022\030.tkrzw_rpc.RemoveRequest\032\031.tkrz" +
-      "w_rpc.RemoveResponse\022L\n\013RemoveMulti\022\035.tk" +
-      "rzw_rpc.RemoveMultiRequest\032\036.tkrzw_rpc.R" +
-      "emoveMultiResponse\022=\n\006Append\022\030.tkrzw_rpc" +
-      ".AppendRequest\032\031.tkrzw_rpc.AppendRespons" +
-      "e\022L\n\013AppendMulti\022\035.tkrzw_rpc.AppendMulti" +
-      "Request\032\036.tkrzw_rpc.AppendMultiResponse\022" +
-      "X\n\017CompareExchange\022!.tkrzw_rpc.CompareEx" +
-      "changeRequest\032\".tkrzw_rpc.CompareExchang" +
-      "eResponse\022F\n\tIncrement\022\033.tkrzw_rpc.Incre" +
-      "mentRequest\032\034.tkrzw_rpc.IncrementRespons" +
-      "e\022g\n\024CompareExchangeMulti\022&.tkrzw_rpc.Co" +
-      "mpareExchangeMultiRequest\032\'.tkrzw_rpc.Co" +
-      "mpareExchangeMultiResponse\022:\n\005Rekey\022\027.tk" +
-      "rzw_rpc.RekeyRequest\032\030.tkrzw_rpc.RekeyRe" +
-      "sponse\022C\n\010PopFirst\022\032.tkrzw_rpc.PopFirstR" +
-      "equest\032\033.tkrzw_rpc.PopFirstResponse\022C\n\010P" +
-      "ushLast\022\032.tkrzw_rpc.PushLastRequest\032\033.tk" +
-      "rzw_rpc.PushLastResponse\022:\n\005Count\022\027.tkrz" +
-      "w_rpc.CountRequest\032\030.tkrzw_rpc.CountResp" +
-      "onse\022L\n\013GetFileSize\022\035.tkrzw_rpc.GetFileS" +
-      "izeRequest\032\036.tkrzw_rpc.GetFileSizeRespon" +
-      "se\022:\n\005Clear\022\027.tkrzw_rpc.ClearRequest\032\030.t" +
-      "krzw_rpc.ClearResponse\022@\n\007Rebuild\022\031.tkrz" +
-      "w_rpc.RebuildRequest\032\032.tkrzw_rpc.Rebuild" +
-      "Response\022X\n\017ShouldBeRebuilt\022!.tkrzw_rpc." +
-      "ShouldBeRebuiltRequest\032\".tkrzw_rpc.Shoul" +
-      "dBeRebuiltResponse\022L\n\013Synchronize\022\035.tkrz" +
-      "w_rpc.SynchronizeRequest\032\036.tkrzw_rpc.Syn" +
-      "chronizeResponse\022=\n\006Search\022\030.tkrzw_rpc.S" +
-      "earchRequest\032\031.tkrzw_rpc.SearchResponse\022" +
-      "A\n\006Stream\022\030.tkrzw_rpc.StreamRequest\032\031.tk" +
-      "rzw_rpc.StreamResponse(\0010\001\022D\n\007Iterate\022\031." +
-      "tkrzw_rpc.IterateRequest\032\032.tkrzw_rpc.Ite" +
-      "rateResponse(\0010\001\022H\n\tReplicate\022\033.tkrzw_rp" +
-      "c.ReplicateRequest\032\034.tkrzw_rpc.Replicate" +
-      "Response0\001\022O\n\014ChangeMaster\022\036.tkrzw_rpc.C" +
-      "hangeMasterRequest\032\037.tkrzw_rpc.ChangeMas" +
-      "terResponseb\006proto3"
+      "o\"^\n\017PopFirstRequest\022\021\n\tdbm_index\030\001 \001(\005\022" +
+      "\020\n\010omit_key\030\002 \001(\010\022\022\n\nomit_value\030\003 \001(\010\022\022\n" +
+      "\nretry_wait\030\004 \001(\001\"V\n\020PopFirstResponse\022&\n" +
+      "\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022\013\n" +
+      "\003key\030\002 \001(\014\022\r\n\005value\030\003 \001(\014\"R\n\017PushLastReq" +
+      "uest\022\021\n\tdbm_index\030\001 \001(\005\022\r\n\005value\030\002 \001(\014\022\r" +
+      "\n\005wtime\030\003 \001(\001\022\016\n\006notify\030\004 \001(\010\":\n\020PushLas" +
+      "tResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.St" +
+      "atusProto\"!\n\014CountRequest\022\021\n\tdbm_index\030\001" +
+      " \001(\005\"F\n\rCountResponse\022&\n\006status\030\001 \001(\0132\026." +
+      "tkrzw_rpc.StatusProto\022\r\n\005count\030\002 \001(\003\"\'\n\022" +
+      "GetFileSizeRequest\022\021\n\tdbm_index\030\001 \001(\005\"P\n" +
+      "\023GetFileSizeResponse\022&\n\006status\030\001 \001(\0132\026.t" +
+      "krzw_rpc.StatusProto\022\021\n\tfile_size\030\002 \001(\003\"" +
+      "!\n\014ClearRequest\022\021\n\tdbm_index\030\001 \001(\005\"7\n\rCl" +
+      "earResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc." +
+      "StatusProto\"J\n\016RebuildRequest\022\021\n\tdbm_ind" +
+      "ex\030\001 \001(\005\022%\n\006params\030\002 \003(\0132\025.tkrzw_rpc.Str" +
+      "ingPair\"9\n\017RebuildResponse\022&\n\006status\030\001 \001" +
+      "(\0132\026.tkrzw_rpc.StatusProto\"+\n\026ShouldBeRe" +
+      "builtRequest\022\021\n\tdbm_index\030\001 \001(\005\"O\n\027Shoul" +
+      "dBeRebuiltResponse\022&\n\006status\030\001 \001(\0132\026.tkr" +
+      "zw_rpc.StatusProto\022\014\n\004tobe\030\002 \001(\010\"\\\n\022Sync" +
+      "hronizeRequest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004har" +
+      "d\030\002 \001(\010\022%\n\006params\030\003 \003(\0132\025.tkrzw_rpc.Stri" +
+      "ngPair\"=\n\023SynchronizeResponse\022&\n\006status\030" +
+      "\001 \001(\0132\026.tkrzw_rpc.StatusProto\"S\n\rSearchR" +
+      "equest\022\021\n\tdbm_index\030\001 \001(\005\022\014\n\004mode\030\002 \001(\t\022" +
+      "\017\n\007pattern\030\003 \001(\014\022\020\n\010capacity\030\004 \001(\005\"I\n\016Se" +
+      "archResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc" +
+      ".StatusProto\022\017\n\007matched\030\002 \003(\014\"\254\003\n\rStream" +
+      "Request\022.\n\014echo_request\030\001 \001(\0132\026.tkrzw_rp" +
+      "c.EchoRequestH\000\022,\n\013get_request\030\002 \001(\0132\025.t" +
+      "krzw_rpc.GetRequestH\000\022,\n\013set_request\030\003 \001" +
+      "(\0132\025.tkrzw_rpc.SetRequestH\000\0222\n\016remove_re" +
+      "quest\030\004 \001(\0132\030.tkrzw_rpc.RemoveRequestH\000\022" +
+      "2\n\016append_request\030\005 \001(\0132\030.tkrzw_rpc.Appe" +
+      "ndRequestH\000\022E\n\030compare_exchange_request\030" +
+      "\006 \001(\0132!.tkrzw_rpc.CompareExchangeRequest" +
+      "H\000\0228\n\021increment_request\030\007 \001(\0132\033.tkrzw_rp" +
+      "c.IncrementRequestH\000\022\025\n\romit_response\030e " +
+      "\001(\010B\017\n\rrequest_oneof\"\245\003\n\016StreamResponse\022" +
+      "0\n\recho_response\030\001 \001(\0132\027.tkrzw_rpc.EchoR" +
+      "esponseH\000\022.\n\014get_response\030\002 \001(\0132\026.tkrzw_" +
+      "rpc.GetResponseH\000\022.\n\014set_response\030\003 \001(\0132" +
+      "\026.tkrzw_rpc.SetResponseH\000\0224\n\017remove_resp" +
+      "onse\030\004 \001(\0132\031.tkrzw_rpc.RemoveResponseH\000\022" +
+      "4\n\017append_response\030\005 \001(\0132\031.tkrzw_rpc.App" +
+      "endResponseH\000\022G\n\031compare_exchange_respon" +
+      "se\030\006 \001(\0132\".tkrzw_rpc.CompareExchangeResp" +
+      "onseH\000\022:\n\022increment_response\030\007 \001(\0132\034.tkr" +
+      "zw_rpc.IncrementResponseH\000B\020\n\016response_o" +
+      "neof\"\352\002\n\016IterateRequest\022\021\n\tdbm_index\030\001 \001" +
+      "(\005\0223\n\toperation\030\002 \001(\0162 .tkrzw_rpc.Iterat" +
+      "eRequest.OpType\022\013\n\003key\030\003 \001(\014\022\r\n\005value\030\004 " +
+      "\001(\014\022\026\n\016jump_inclusive\030\005 \001(\010\022\020\n\010omit_key\030" +
+      "\006 \001(\010\022\022\n\nomit_value\030\007 \001(\010\"\265\001\n\006OpType\022\013\n\007" +
+      "OP_NONE\020\000\022\014\n\010OP_FIRST\020\001\022\013\n\007OP_LAST\020\002\022\013\n\007" +
+      "OP_JUMP\020\003\022\021\n\rOP_JUMP_LOWER\020\004\022\021\n\rOP_JUMP_" +
+      "UPPER\020\005\022\013\n\007OP_NEXT\020\006\022\017\n\013OP_PREVIOUS\020\007\022\n\n" +
+      "\006OP_GET\020\010\022\n\n\006OP_SET\020\t\022\r\n\tOP_REMOVE\020\n\022\013\n\007" +
+      "OP_STEP\020\013\"U\n\017IterateResponse\022&\n\006status\030\001" +
+      " \001(\0132\026.tkrzw_rpc.StatusProto\022\013\n\003key\030\002 \001(" +
+      "\014\022\r\n\005value\030\003 \001(\014\"O\n\020ReplicateRequest\022\025\n\r" +
+      "min_timestamp\030\001 \001(\003\022\021\n\tserver_id\030\002 \001(\005\022\021" +
+      "\n\twait_time\030\003 \001(\001\"\206\002\n\021ReplicateResponse\022" +
+      "&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.StatusProto\022" +
+      "\021\n\ttimestamp\030\002 \001(\003\022\021\n\tserver_id\030\003 \001(\005\022\021\n" +
+      "\tdbm_index\030\004 \001(\005\0224\n\007op_type\030\005 \001(\0162#.tkrz" +
+      "w_rpc.ReplicateResponse.OpType\022\013\n\003key\030\006 " +
+      "\001(\014\022\r\n\005value\030\007 \001(\014\">\n\006OpType\022\013\n\007OP_NOOP\020" +
+      "\000\022\n\n\006OP_SET\020\001\022\r\n\tOP_REMOVE\020\002\022\014\n\010OP_CLEAR" +
+      "\020\003\"=\n\023ChangeMasterRequest\022\016\n\006master\030\001 \001(" +
+      "\t\022\026\n\016timestamp_skew\030\002 \001(\003\">\n\024ChangeMaste" +
+      "rResponse\022&\n\006status\030\001 \001(\0132\026.tkrzw_rpc.St" +
+      "atusProto2\373\016\n\nDBMService\0227\n\004Echo\022\026.tkrzw" +
+      "_rpc.EchoRequest\032\027.tkrzw_rpc.EchoRespons" +
+      "e\022@\n\007Inspect\022\031.tkrzw_rpc.InspectRequest\032" +
+      "\032.tkrzw_rpc.InspectResponse\0224\n\003Get\022\025.tkr" +
+      "zw_rpc.GetRequest\032\026.tkrzw_rpc.GetRespons" +
+      "e\022C\n\010GetMulti\022\032.tkrzw_rpc.GetMultiReques" +
+      "t\032\033.tkrzw_rpc.GetMultiResponse\0224\n\003Set\022\025." +
+      "tkrzw_rpc.SetRequest\032\026.tkrzw_rpc.SetResp" +
+      "onse\022C\n\010SetMulti\022\032.tkrzw_rpc.SetMultiReq" +
+      "uest\032\033.tkrzw_rpc.SetMultiResponse\022=\n\006Rem" +
+      "ove\022\030.tkrzw_rpc.RemoveRequest\032\031.tkrzw_rp" +
+      "c.RemoveResponse\022L\n\013RemoveMulti\022\035.tkrzw_" +
+      "rpc.RemoveMultiRequest\032\036.tkrzw_rpc.Remov" +
+      "eMultiResponse\022=\n\006Append\022\030.tkrzw_rpc.App" +
+      "endRequest\032\031.tkrzw_rpc.AppendResponse\022L\n" +
+      "\013AppendMulti\022\035.tkrzw_rpc.AppendMultiRequ" +
+      "est\032\036.tkrzw_rpc.AppendMultiResponse\022X\n\017C" +
+      "ompareExchange\022!.tkrzw_rpc.CompareExchan" +
+      "geRequest\032\".tkrzw_rpc.CompareExchangeRes" +
+      "ponse\022F\n\tIncrement\022\033.tkrzw_rpc.Increment" +
+      "Request\032\034.tkrzw_rpc.IncrementResponse\022g\n" +
+      "\024CompareExchangeMulti\022&.tkrzw_rpc.Compar" +
+      "eExchangeMultiRequest\032\'.tkrzw_rpc.Compar" +
+      "eExchangeMultiResponse\022:\n\005Rekey\022\027.tkrzw_" +
+      "rpc.RekeyRequest\032\030.tkrzw_rpc.RekeyRespon" +
+      "se\022C\n\010PopFirst\022\032.tkrzw_rpc.PopFirstReque" +
+      "st\032\033.tkrzw_rpc.PopFirstResponse\022C\n\010PushL" +
+      "ast\022\032.tkrzw_rpc.PushLastRequest\032\033.tkrzw_" +
+      "rpc.PushLastResponse\022:\n\005Count\022\027.tkrzw_rp" +
+      "c.CountRequest\032\030.tkrzw_rpc.CountResponse" +
+      "\022L\n\013GetFileSize\022\035.tkrzw_rpc.GetFileSizeR" +
+      "equest\032\036.tkrzw_rpc.GetFileSizeResponse\022:" +
+      "\n\005Clear\022\027.tkrzw_rpc.ClearRequest\032\030.tkrzw" +
+      "_rpc.ClearResponse\022@\n\007Rebuild\022\031.tkrzw_rp" +
+      "c.RebuildRequest\032\032.tkrzw_rpc.RebuildResp" +
+      "onse\022X\n\017ShouldBeRebuilt\022!.tkrzw_rpc.Shou" +
+      "ldBeRebuiltRequest\032\".tkrzw_rpc.ShouldBeR" +
+      "ebuiltResponse\022L\n\013Synchronize\022\035.tkrzw_rp" +
+      "c.SynchronizeRequest\032\036.tkrzw_rpc.Synchro" +
+      "nizeResponse\022=\n\006Search\022\030.tkrzw_rpc.Searc" +
+      "hRequest\032\031.tkrzw_rpc.SearchResponse\022A\n\006S" +
+      "tream\022\030.tkrzw_rpc.StreamRequest\032\031.tkrzw_" +
+      "rpc.StreamResponse(\0010\001\022D\n\007Iterate\022\031.tkrz" +
+      "w_rpc.IterateRequest\032\032.tkrzw_rpc.Iterate" +
+      "Response(\0010\001\022H\n\tReplicate\022\033.tkrzw_rpc.Re" +
+      "plicateRequest\032\034.tkrzw_rpc.ReplicateResp" +
+      "onse0\001\022O\n\014ChangeMaster\022\036.tkrzw_rpc.Chang" +
+      "eMasterRequest\032\037.tkrzw_rpc.ChangeMasterR" +
+      "esponseb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -50533,7 +50717,7 @@ public final class TkrzwRpc {
     internal_static_tkrzw_rpc_CompareExchangeRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tkrzw_rpc_CompareExchangeRequest_descriptor,
-        new java.lang.String[] { "DbmIndex", "Key", "ExpectedExistence", "ExpectedValue", "ExpectAnyValue", "DesiredExistence", "DesiredValue", "DesireNoUpdate", "GetActual", });
+        new java.lang.String[] { "DbmIndex", "Key", "ExpectedExistence", "ExpectedValue", "ExpectAnyValue", "DesiredExistence", "DesiredValue", "DesireNoUpdate", "GetActual", "RetryWait", "Notify", });
     internal_static_tkrzw_rpc_CompareExchangeResponse_descriptor =
       getDescriptor().getMessageTypes().get(25);
     internal_static_tkrzw_rpc_CompareExchangeResponse_fieldAccessorTable = new

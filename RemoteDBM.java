@@ -765,11 +765,15 @@ public class RemoteDBM {
    * is ANY_BYTES, an existing record with any value is expacted.
    * @param desired The desired value.  If it is null, the record is to be removed.  If it is
    * ANY_BYTES, no update is done.
+   * @param retryWait The maximum wait time in seconds before retrying.  If it is zero, no
+   * retry is done.  If it is positive, retry is done after waiting for the notifications of the
+   * next update for the time at most.
+   * @param notify If true, a notification signal is sent to wake up retrying threads.
    * @return The result status and the.old value of the record  If the condition doesn't meet,
    * the state is INFEASIBLE_ERROR.  If there's no existing record, the value is null.
    */
-  public Status.And<byte[]> compareExchangeAndGet(
-      byte[] key, byte[] expected, byte[] desired) {
+  public Status.And<byte[]> compareExchangeAdvanced(
+      byte[] key, byte[] expected, byte[] desired, double retryWait, boolean notify) {
     Status.And<byte[]> result = new Status.And<byte[]>();
     if (stub_ == null) {
       result.status = new Status(Status.PRECONDITION_ERROR, "not opened connection");
@@ -797,6 +801,10 @@ public class RemoteDBM {
       }
     }
     request.setGetActual(true);
+    if (retryWait > 0) {
+      request.setRetryWait(retryWait);
+    }
+    request.setNotify(notify);
     TkrzwRpc.CompareExchangeResponse response;
     try {
       response = stub_.withDeadlineAfter((long)(timeout_ * 1000), TimeUnit.SECONDS)
@@ -819,10 +827,15 @@ public class RemoteDBM {
    * is ANY_STRING, an existing record with any value is expacted.
    * @param desired The desired value.  If it is null, the record is to be removed.  If it is
    * ANY_STRING, no update is done.
+   * @param retryWait The maximum wait time in seconds before retrying.  If it is zero, no
+   * retry is done.  If it is positive, retry is done after waiting for the notifications of the
+   * next update for the time at most.
+   * @param notify If true, a notification signal is sent to wake up retrying threads.
    * @return The result status and the.old value of the record  If the condition doesn't meet,
    * the state is INFEASIBLE_ERROR.  If there's no existing record, the value is null.
    */
-  public Status.And<String> compareExchangeAndGet(String key, String expected, String desired) {
+  public Status.And<String> compareExchangeAdvanced(
+      String key, String expected, String desired, double retryWait, boolean notify) {
     byte[] rawExpected = null;
     if (expected == ANY_STRING) {
       rawExpected = ANY_BYTES;
@@ -835,8 +848,8 @@ public class RemoteDBM {
     } else if (desired != null) {
       rawDesired = desired.getBytes(StandardCharsets.UTF_8);
     }
-    Status.And<byte[]> rawResult =
-        compareExchangeAndGet(key.getBytes(StandardCharsets.UTF_8), rawExpected, rawDesired);
+    Status.And<byte[]> rawResult = compareExchangeAdvanced(
+        key.getBytes(StandardCharsets.UTF_8), rawExpected, rawDesired, retryWait, notify);
     Status.And<String> result = new Status.And<String>();
     result.status = rawResult.status;
     result.value = rawResult.value ==
@@ -1027,10 +1040,11 @@ public class RemoteDBM {
 
   /**
    * Gets the first record and removes it.
+   * @param retryWait The maximum wait time in seconds before retrying.  If it is zero, no retry is done.  If it is positive, retry is done after waiting for the notifications of the next update for the time at most.
    * @param status The status object to store the result status.  If it is null, it is ignored.
    * @return A pair of the key and the value of the first record, or null on failure.
    */
-  public byte[][] popFirst(Status status) {
+  public byte[][] popFirst(double retryWait, Status status) {
     if (stub_ == null) {
       if (status != null) {
         status.set(Status.PRECONDITION_ERROR, "not opened connection");
@@ -1039,6 +1053,9 @@ public class RemoteDBM {
     }
     TkrzwRpc.PopFirstRequest.Builder request = TkrzwRpc.PopFirstRequest.newBuilder();
     request.setDbmIndex(dbmIndex_);
+    if (retryWait > 0) {
+      request.setRetryWait(retryWait);
+    }
     TkrzwRpc.PopFirstResponse response;
     try {
       response = stub_.withDeadlineAfter((long)(timeout_ * 1000), TimeUnit.SECONDS)
@@ -1066,16 +1083,17 @@ public class RemoteDBM {
    * @return A pair of the key and the value of the first record, or null on failure.
    */
   public byte[][] popFirst() {
-    return popFirst(null);
+    return popFirst(0, null);
   }
 
   /**
    * Gets the first record as strings and removes it.
+   * @param retryWait The maximum wait time in seconds before retrying.  If it is zero, no retry is done.  If it is positive, retry is done after waiting for the notifications of the next update for the time at most.
    * @param status The status object to store the result status.  If it is null, it is ignored.
    * @return A pair of the key and the value of the first record, or null on failure.
    */
-  public String[] popFirstString(Status status) {
-    byte[][] record = popFirst(status);
+  public String[] popFirstString(double retryWait, Status status) {
+    byte[][] record = popFirst(retryWait, status);
     if (record == null) {
       return null;
     }
@@ -1090,7 +1108,7 @@ public class RemoteDBM {
    * @return A pair of the key and the value of the first record, or null on failure.
    */
   public String[] popFirstString() {
-    return popFirstString(null);
+    return popFirstString(0, null);
   }
 
   /**
@@ -1098,12 +1116,13 @@ public class RemoteDBM {
    * @param value The value of the record.
    * @param wtime The current wall time used to generate the key.  If it is negative, the system
    * clock is used.
+   * @param notify If true, notification signal is sent.
    * @return The result status.
    * @note The key is generated as an 8-bite big-endian binary string of the timestamp.  If
    * there is an existing record matching the generated key, the key is regenerated and the
    * attempt is repeated until it succeeds.
    */
-  public Status pushLast(byte[] value, double wtime) {
+  public Status pushLast(byte[] value, double wtime, boolean notify) {
     if (stub_ == null) {
       return new Status(Status.PRECONDITION_ERROR, "not opened connection");
     }
@@ -1111,6 +1130,7 @@ public class RemoteDBM {
     request.setDbmIndex(dbmIndex_);
     request.setValue(ByteString.copyFrom(value));
     request.setWtime(wtime);
+    request.setNotify(notify);
     TkrzwRpc.PushLastResponse response;
     try {
       response = stub_.withDeadlineAfter((long)(timeout_ * 1000), TimeUnit.SECONDS)
@@ -1126,10 +1146,11 @@ public class RemoteDBM {
    * @param value The value of the record.
    * @param wtime The current wall time used to generate the key.  If it is negative, the system
    * clock is used.
+   * @param notify If true, notification signal is sent.
    * @return The result status.
    */
-  public Status pushLast(String value, double wtime) {
-    return pushLast(value.getBytes(StandardCharsets.UTF_8), wtime);
+  public Status pushLast(String value, double wtime, boolean notify) {
+    return pushLast(value.getBytes(StandardCharsets.UTF_8), wtime, notify);
   }
 
   /**

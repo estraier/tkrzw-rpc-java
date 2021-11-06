@@ -1,6 +1,6 @@
 # Source of configuration for Tkrzw for Java
 
-AC_INIT([tkrzw-rpc-java], [0.1.3])
+AC_INIT([tkrzw-rpc-java], [0.1.4])
 
 MYJARFILES="tkrzw_rpc.jar"
 MYJAVAFILES="DBMServiceGrpc.java TkrzwRpc.java Status.java StatusException.java RemoteDBM.java Iterator.java Test.java"
