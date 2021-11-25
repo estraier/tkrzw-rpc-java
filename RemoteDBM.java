@@ -266,6 +266,38 @@ public class RemoteDBM {
   }
 
   /**
+   * Checks if a record exists or not.
+   * @param key The key of the record.
+   * @return True if the record exists, or false if not.
+   */
+  public boolean contains(byte[] key) {
+    if (stub_ == null) {
+      return false;
+    }
+    TkrzwRpc.GetRequest.Builder request = TkrzwRpc.GetRequest.newBuilder();
+    request.setDbmIndex(dbmIndex_);
+    request.setKey(ByteString.copyFrom(key));
+    request.setOmitValue(true);
+    TkrzwRpc.GetResponse response;
+    try {
+      response = stub_.withDeadlineAfter((long)(timeout_ * 1000), TimeUnit.SECONDS)
+          .get(request.build());
+    } catch (Exception e) {
+      return false;
+    }
+    return response.getStatus().getCode() == 0;
+  }
+
+  /**
+   * Checks if a record exists or not, with string data.
+   * @param key The key of the record.
+   * @return True if the record exists, or false if not.
+   */
+  public boolean contains(String key) {
+    return contains(key.getBytes(StandardCharsets.UTF_8));
+  }
+
+  /**
    * Gets the value of a record of a key.
    * @param key The key of the record.
    * @param status The status object to store the result status.  If it is null, it is ignored.

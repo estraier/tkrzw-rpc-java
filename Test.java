@@ -248,9 +248,11 @@ public class Test {
     check(dbm.echo("hello", status).equals("hello"));
     check(status.equals(Status.SUCCESS));
     check(dbm.clear().equals(Status.SUCCESS));
+    check(!dbm.contains("one"));
     check(dbm.set("one", "ichi").equals(Status.SUCCESS));
     check(dbm.set("one", "first", false).equals(Status.DUPLICATION_ERROR));
     check(dbm.set("one", "first", true).equals(Status.SUCCESS));
+    check(dbm.contains("one"));
     check(Arrays.equals(dbm.get("one".getBytes()), "first".getBytes()));
     status.set(Status.UNKNOWN_ERROR, "");
     check(dbm.get("one", status).equals("first"));
